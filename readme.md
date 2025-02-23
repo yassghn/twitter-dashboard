@@ -1,4 +1,4 @@
-# twitter-dashboard <img style="position: absolute; left: 100%;" alt-text="twitter-dashboard icon" title="twitter-dashboard" src="resources/icons/twitter-dashboard-48.png">
+# twitter-dashboard <img align="right" alt-text="twitter-dashboard icon" title="twitter-dashboard" src="resources/icons/twitter-dashboard-48.png">
 
 
 dashboard for **twitter-2**. a *quality of life* firefox plugin.
@@ -6,6 +6,10 @@ dashboard for **twitter-2**. a *quality of life* firefox plugin.
 ## building
 
 ```shell
+$ git clone git@github.com:yassghn/twitter-dashboard
+
+$ cd twitter-dashboard
+
 $ npm i
 
 $ npm run build
@@ -45,7 +49,7 @@ watch src files for changes
 $ npm run watch
 ```
 
-run webext && watch dist files for changes
+run webext & watch dist files for changes
 
 ```shell
 $ npm run start
