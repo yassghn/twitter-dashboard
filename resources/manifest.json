@@ -1,0 +1,32 @@
+{
+    "manifest_version": 2,
+    "name": "twitter-dashboard",
+    "version": "0.0.1",
+    "description": "quality of life dashboard for twitter-2",
+    "icons": {
+        "48": "icons/twitter-dashboard-48.png",
+        "96": "icons/twitter-dashboard-96.png"
+    },
+    "permissions": [
+        "webRequest",
+        "webRequestBlocking",
+        "*://*.twitter.com/*",
+        "*://*.x.com/*"
+    ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.twitter.com/*",
+                "*://*.x.com/*"
+            ],
+            "js": [
+                "twitter-dashboard.js"
+            ]
+        }
+    ]
+}

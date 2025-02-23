@@ -1,0 +1,47 @@
+{
+  "name": "twitter-dashboard",
+  "version": "0.0.1",
+  "description": "quality of life dashboard for twitter-2",
+  "main": "_build.js",
+  "type": "module",
+  "scripts": {
+    "build": "npm run rollup && node _build.js -b",
+    "clean": "node _build.js -c",
+    "cleanbuild": "npm run clean && npm run rollup && npm run build",
+    "start": "web-ext run",
+    "package": "web-ext build",
+    "rollup": "rollup -c rollup.config.mjs",
+    "watch": "npm-watch build",
+    "test": "test"
+  },
+  "watch": {
+    "build": {
+      "patterns": ["src"],
+      "extensions": "js",
+      "quiet": true
+    }
+  },
+  "keywords": [
+    "twitter",
+    "x",
+    "dashboard",
+    "firefox",
+    "addon",
+    "extension"
+  ],
+  "author": "yasgghn@protonmail.com",
+  "license": "SEE LICENSE IN license",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "adm-zip": "^0.5.16",
+    "fs-extra": "^11.3.0",
+    "minimist": "^1.2.8",
+    "npm-watch": "^0.13.0",
+    "rollup": "^4.34.8",
+    "web-ext": "^8.4.0"
+  },
+  "dependencies": {
+    "jquery": "^3.7.1"
+  }
+}
