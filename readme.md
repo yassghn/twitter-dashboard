@@ -5,17 +5,31 @@ dashboard for **twitter-2**. a *quality of life* firefox plugin.
 
 ## building
 
-```shell
-$ git clone git@github.com:yassghn/twitter-dashboard
+clone
 
-$ cd twitter-dashboard
+```gitignore
+git clone git@github.com:yassghn/twitter-dashboard
+```
+
+build
+
+```boo
+$ cd ./twitter-dashboard
 
 $ npm i
 
 $ npm run build
+```
 
+clean
+
+```boo
 $ npm run clean
+```
 
+clean & build
+
+```boo
 $ npm run cleanbuild
 ```
 
@@ -27,13 +41,13 @@ edit firefox binary/profile (remove for defaults)
 
 ## running
 
-```shell
+```boo
 $ npm run start
 ```
 
 or
 
-```text
+```gitignore
 1. about:debugging#/runtime/this-firefox
 
 2. .../dist/zip/twitter-dashboard-${version}.zip
@@ -45,19 +59,19 @@ or
 
 watch src files for changes
 
-```shell
+```boo
 $ npm run watch
 ```
 
 run webext & watch dist files for changes
 
-```shell
+```boo
 $ npm run start
 ```
 
 ## testing
 
-```shell
+```boo
 $ npm run test
 ```
 
