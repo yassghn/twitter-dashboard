@@ -18,7 +18,8 @@
     "build": {
       "patterns": ["src"],
       "extensions": "js",
-      "quiet": true
+      "quiet": true,
+      "delay": 3000
     }
   },
   "keywords": [
