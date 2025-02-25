@@ -2,14 +2,26 @@
   "name": "twitter-dashboard",
   "version": "0.0.1",
   "description": "quality of life dashboard for twitter-2",
+  "homepage": "https://github.com/yassghn/twitter-dashboard",
+  "bugs": "https://github.com/yassghn/twitter-dashboard/issues",
+  "author": "yasgghn@protonmail.com",
+  "license": "SEE LICENSE IN license",
   "main": "_build.js",
   "type": "module",
+  "keywords": [
+    "twitter",
+    "x",
+    "dashboard",
+    "firefox",
+    "addon",
+    "extension"
+  ],
   "scripts": {
     "build": "npm run rollup && node _build.js -b",
     "clean": "node _build.js -c",
-    "cleanbuild": "npm run clean && npm run rollup && npm run build",
+    "cleanbuild": "npm run clean && npm run build",
     "start": "web-ext run",
-    "package": "web-ext build",
+    "package": "npm run clean && npm run build && web-ext build",
     "rollup": "rollup -c rollup.config.mjs",
     "watch": "npm-watch build",
     "test": "test"
@@ -22,16 +34,6 @@
       "delay": 3000
     }
   },
-  "keywords": [
-    "twitter",
-    "x",
-    "dashboard",
-    "firefox",
-    "addon",
-    "extension"
-  ],
-  "author": "yasgghn@protonmail.com",
-  "license": "SEE LICENSE IN license",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-node-resolve": "^16.0.0",
