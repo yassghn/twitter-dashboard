@@ -19,6 +19,9 @@
         "default_title": "twitter-dashboard",
         "default_popup": "popup/twitter-dashboard-popup.html"
     },
+    "options_ui": {
+        "page": "options/twitter-dashboard-options.html"
+    },
     "background": {
         "scripts": [
             "background.js"
