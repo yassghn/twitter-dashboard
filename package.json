@@ -35,7 +35,7 @@
       "extensions": [
         "js",
         "html",
-        "css",
+        "scss",
         "json"
       ],
       "quiet": true,
