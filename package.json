@@ -50,6 +50,7 @@
     "minimist": "^1.2.8",
     "npm-watch": "^0.13.0",
     "rollup": "^4.34.8",
+    "sass": "^1.85.1",
     "web-ext": "^8.4.0"
   },
   "dependencies": {
