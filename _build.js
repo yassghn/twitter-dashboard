@@ -23,7 +23,6 @@ const config = {
         in: ['resources/', 'dist/rolledup',]
     },
     src: {
-        res: 'src\\resources',
         js: ['src/**/*.js'],
         sass: ['src/**/*.scss']
     }
@@ -34,7 +33,7 @@ function copyJs() {
     try {
         const files = globSync(config.src.js)
         for (let file of files) {
-            const dest = file.includes('resources') ? config.dirs.ext+file.replace(config.src.res, '') : config.dirs.ext+file.replace('src', '')
+            const dest = config.dirs.ext+file.replace('src', '')
             fs.cpSync(file, dest)
         }
     } catch (e) {
@@ -49,7 +48,7 @@ function compileSass() {
         const files = globSync(config.src.sass)
         for (let file of files) {
             const result = sass.compile(file)
-            const dest = (config.dirs.ext+file.replace(config.src.res, '')).replace('scss', 'css')
+            const dest = (config.dirs.ext+file.replace('src', '')).replace('scss', 'css')
             fs.writeFileSync(dest, result.css)
         }
     } catch (e) {
