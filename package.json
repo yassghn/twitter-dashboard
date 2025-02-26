@@ -28,8 +28,16 @@
   },
   "watch": {
     "build": {
-      "patterns": ["src"],
-      "extensions": "js",
+      "patterns": [
+        "src/**",
+        "resources/**"
+      ],
+      "extensions": [
+        "js",
+        "html",
+        "css",
+        "json"
+      ],
       "quiet": true,
       "delay": 3000
     }
