@@ -4,10 +4,12 @@
  *
  * _build.js
  */
+import { globSync } from 'node:fs'
 import zip from 'adm-zip'
 import fs from 'fs-extra'
 import minimist from 'minimist'
 import { exit } from 'process'
+import * as sass from 'sass'
 
 // get name & version from package.json
 import packagejson from './package.json' with {type: 'json'}
@@ -16,41 +18,76 @@ import packagejson from './package.json' with {type: 'json'}
 const config = {
     outname: `${packagejson.name}-${packagejson.version}.zip`,
     dirs: {
-        out: {
-            zip: 'dist/zip',
-            ext: 'dist/ext',
-            dist: 'dist'
-        },
-        in: ['src/', 'resources/', 'dist/rolledup',]
+        ext: 'dist/ext',
+        out: { zip: 'dist/zip', dist: 'dist' },
+        in: ['resources/', 'dist/rolledup',]
+    },
+    src: {
+        res: 'src\\resources',
+        js: ['src/**/*.js'],
+        sass: ['src/**/*.scss']
+    }
+}
+
+// copy javascript
+function copyJs() {
+    try {
+        const files = globSync(config.src.js)
+        for (let file of files) {
+            const dest = file.includes('resources') ? config.dirs.ext+file.replace(config.src.res, '') : config.dirs.ext+file.replace('src', '')
+            fs.cpSync(file, dest)
+        }
+    } catch (e) {
+        console.error(e)
+        exit(1)
+    }
+}
+
+// compile sass files
+function compileSass() {
+    try {
+        const files = globSync(config.src.sass)
+        for (let file of files) {
+            const result = sass.compile(file)
+            const dest = (config.dirs.ext+file.replace(config.src.res, '')).replace('scss', 'css')
+            fs.writeFileSync(dest, result.css)
+        }
+    } catch (e) {
+        console.error(e)
+        exit(1)
     }
 }
 
 // zip
 function zipit() {
-    // dir check
+    // dir sync check
     fs.ensureDirSync(config.dirs.out.zip)
     // init zip object
     const zipFile = new zip()
     // add in folders to build
-    config.dirs.in.find((dir) => zipFile.addLocalFolder(dir))
+    zipFile.addLocalFolder(config.dirs.ext)
     // create zip
     zipFile.writeZip(`${config.dirs.out.zip}/${config.outname}`)
 }
 
 // web-ext packaging
 function webextPrepare() {
-    // dir check
-    fs.ensureDirSync(config.dirs.out.ext)
     // add in folders to build
-    config.dirs.in.find((dir) => fs.copySync(dir, config.dirs.out.ext))
+    config.dirs.in.find((dir) => fs.copySync(dir, config.dirs.ext))
 }
 
 // build
 function build() {
-    // zip it
-    zipit()
+    // dir sync check
+    fs.ensureDirSync(config.dirs.ext)
+    // copy js
+    copyJs()
+    // compile sass
+    compileSass()
     // prepare webext package
     webextPrepare()
+    // zip it
+    zipit()
     // exit process success
     exit(0)
 }
