@@ -83,7 +83,6 @@
                 }
                 // aggregate index to delete entry
                 if (screen_name != '') {
-                    log(screen_name)
                     if (config.options.whitelist.includes(screen_name)) {
                         indices.push(index)
                     }
