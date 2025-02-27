@@ -22,7 +22,7 @@
         const whitelistText = formatWhitelist(document.querySelector(config.selectors.whitelist).value)
         const whitelistArray = whitelistText.split(',')
         const options = {
-            whitelist: whitelist
+            whitelist: whitelistArray
         }
         browser.storage.local.set(options)
     }
