@@ -100,7 +100,7 @@
         // interate instruction entries
         //for (let entry of instructions[2].entries) {
         let indices = []
-        // collect indices of entries to removed
+        // collect indices of entries to remove
         instructions[0].entries.forEach((entry, index) => {
             log(entry)
             if (entry?.content?.entryType === "TimelineTimelineItem") {
@@ -142,6 +142,8 @@
         let decoder = new TextDecoder('utf-8')
         let encoder = new TextEncoder()
 
+        // many responses are split into large chunks
+        // aggregate those chunks within an array
         let dm = new Map()
         dm.set(requestId, [])
 
@@ -159,11 +161,11 @@
             log(`<END>[REUQEST DETAILS: #]:${requestId}`)
             // check if we got data
             if (dm.get(requestId).length > 0) {
-                // check if we need to apply whitelist
                 try {
                     log(`<END>[REUQEST DETAILS: #]:${requestId}`)
+                    // check if we need to apply whitelist
                     if (config.options.whitelist != undefined) {
-                        // get request json as json object
+                        // get request json as a single json object
                         let dataObj = JSON.parse(dm.get(requestId).join())
                         log(dataObj)
                         // delete unwhitelisted entries
@@ -181,6 +183,7 @@
     }
 
     function requestListener(requestDetails) {
+        // only process configured api targets
         const target = isTargetUrl(requestDetails.url)
         log(target)
         if (target !== undefined) {
