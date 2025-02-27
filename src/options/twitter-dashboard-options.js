@@ -4,6 +4,7 @@
         debug: true,
         selectors: {
             default: '#options-header',
+            enableWhitelist: '#enable-whitelist',
             whitelist: '#whitelist',
             save: '#save'
         }
@@ -18,13 +19,15 @@
         return ret
     }
 
-    function saveOptions() {
+    async function saveOptions() {
+        const enableWhitelist = document.querySelector(config.selectors.enableWhitelist).checked
         const whitelistText = formatWhitelist(document.querySelector(config.selectors.whitelist).value)
         const whitelistArray = whitelistText.split(',')
         const options = {
+            whitelistEnabled: enableWhitelist,
             whitelist: whitelistArray
         }
-        browser.storage.local.set(options)
+        await browser.storage.local.set(options)
     }
 
     function egg() {
@@ -34,6 +37,10 @@
     }
 
     function addClickListeners() {
+        const enableWhitelist = document.querySelector(config.selectors.enableWhitelist)
+        enableWhitelist.addEventListener('change', (e) => {
+            console.log(enableWhitelist.checked)
+        })
         const save = document.querySelector(config.selectors.save)
         save.addEventListener('click', (e) => {
             saveOptions();

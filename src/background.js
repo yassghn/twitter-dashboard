@@ -182,13 +182,16 @@
     }
 
     function requestListener(requestDetails) {
-        // only process configured api targets
-        const target = isTargetUrl(requestDetails.url)
-        log(target)
-        if (target !== undefined) {
-            log(`<START>[REUQEST DETAILS: #${requestDetails.requestId}]:`)
-            log(requestDetails)
-            filterResponse(requestDetails.requestId, target)
+        // check if whitelisting is enabled
+        if (config.options.whitelistEnabled) {
+            // only process configured api targets
+            const target = isTargetUrl(requestDetails.url)
+            log(target)
+            if (target !== undefined) {
+                log(`<START>[REUQEST DETAILS: #${requestDetails.requestId}]:`)
+                log(requestDetails)
+                filterResponse(requestDetails.requestId, target)
+            }
         }
     }
 
@@ -197,6 +200,10 @@
     }
 
     async function loadOptions() {
+        // get options from storage
+        // get whitelistEnabled
+        const whitelistEnabled = await browser.storage.local.get('whitelistEnabled')
+        config.options.whitelistEnabled = (whitelistEnabled === undefined) ? false : whitelistEnabled.whitelistEnabled
         // get whitelist from options
         const whitelist = await browser.storage.local.get('whitelist')
         if (whitelist != undefined) {

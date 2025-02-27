@@ -11,11 +11,24 @@
           <span>twitter-dashboard options!</span>
         </div>
         <form>
-          <div class="option">
-            <label for="whitelist">whitelist: comma separated list of usernames</label>
+          <fieldset>
+          <legend>whitelist</legend>
+            <div><span>(only load posts from approved accounts)</span></div>
             <br/>
-            <textarea type="text" id="whitelist" name="whitelist"></textarea>
-          </div>
+            <div class="option">
+              <label for="enable-whitelist">enable?</label>
+              <br/>
+              <label class="switch">
+                <input type="checkbox" id="enable-whitelist" name="enable-whitelist">
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="option">
+              <label for="whitelist">whitelist: comma separated list of usernames</label>
+              <br/>
+              <textarea type="text" id="whitelist" name="whitelist"></textarea>
+            </div>
+          </fieldset>
           <div class="option">
             <button id="save" type="button">save</button>
           </div>
