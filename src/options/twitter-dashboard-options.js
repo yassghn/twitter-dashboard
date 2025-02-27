@@ -5,7 +5,8 @@
         selectors: {
             default: '#options-header',
             enableWhitelist: '#enable-whitelist',
-            whitelist: '#whitelist',
+            whitelist: 'div#whitelist',
+            whitelistText: 'textarea#whitelist',
             save: '#save'
         },
         options: {}
@@ -31,7 +32,7 @@
 
     async function saveOptions() {
         const enableWhitelist = document.querySelector(config.selectors.enableWhitelist).checked
-        const whitelistText = formatWhitelist(document.querySelector(config.selectors.whitelist).value)
+        const whitelistText = formatWhitelist(document.querySelector(config.selectors.whitelistText).value)
         const whitelistArray = whitelistText.split(',')
         const options = {
             whitelistEnabled: enableWhitelist,
@@ -49,7 +50,10 @@
     function addClickListeners() {
         const enableWhitelist = document.querySelector(config.selectors.enableWhitelist)
         enableWhitelist.addEventListener('change', (e) => {
-            console.log(enableWhitelist.checked)
+            // hide and unhide whitelist textarea
+            const whitelist = document.querySelector(config.selectors.whitelist)
+            const whitelistEnabled = document.querySelector(config.selectors.enableWhitelist).checked
+            whitelist.style.visibility = whitelistEnabled ? "visible" : "hidden"
         })
         const save = document.querySelector(config.selectors.save)
         save.addEventListener('click', (e) => {
@@ -75,15 +79,18 @@
     }
 
     async function populateSavedSettings() {
+        // load options
         await loadOptions()
-        if (config.options.whitelistEnabled) {
+        // populate settings
+        if (config.options.whitelistEnabled != undefined) {
             const enableWhitelist = document.querySelector(config.selectors.enableWhitelist)
             enableWhitelist.checked = config.options.whitelistEnabled
         }
         if (config.options.whitelist) {
             const whitelistText = config.options.whitelist
-            const whitelistTextArea = document.querySelector(config.selectors.whitelist)
+            const whitelistTextArea = document.querySelector(config.selectors.whitelistText)
             whitelistTextArea.value = whitelistText
+            whitelist.style.visibility = config.options.whitelistEnabled ? "visible" : "hidden"
         }
     }
 
