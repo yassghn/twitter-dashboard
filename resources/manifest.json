@@ -9,6 +9,7 @@
         "96": "icons/twitter-dashboard-96.png"
     },
     "permissions": [
+        "storage",
         "webRequest",
         "webRequestBlocking",
         "*://*.twitter.com/*",
