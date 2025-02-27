@@ -7,6 +7,16 @@
             enableWhitelist: '#enable-whitelist',
             whitelist: '#whitelist',
             save: '#save'
+        },
+        options: {}
+    }
+
+    function log(msg, err = false) {
+        if (config.debug) {
+            if (!err)
+                console.log(msg)
+            else
+                console.error(msg)
         }
     }
 
@@ -51,6 +61,37 @@
         })
     }
 
-    addClickListeners()
+    async function loadOptions() {
+        // get options from storage
+        // get whitelistEnabled
+        const whitelistEnabled = await browser.storage.local.get('whitelistEnabled')
+        config.options.whitelistEnabled = (whitelistEnabled === undefined) ? false : whitelistEnabled.whitelistEnabled
+        // get whitelist from options
+        const whitelist = await browser.storage.local.get('whitelist')
+        if (whitelist != undefined) {
+            config.options.whitelist = whitelist.whitelist
+        }
+        log(config.options)
+    }
+
+    async function populateSavedSettings() {
+        await loadOptions()
+        if (config.options.whitelistEnabled) {
+            const enableWhitelist = document.querySelector(config.selectors.enableWhitelist)
+            enableWhitelist.checked = config.options.whitelistEnabled
+        }
+        if (config.options.whitelist) {
+            const whitelistText = config.options.whitelist
+            const whitelistTextArea = document.querySelector(config.selectors.whitelist)
+            whitelistTextArea.value = whitelistText
+        }
+    }
+
+    function options() {
+        addClickListeners()
+        populateSavedSettings()
+    }
+
+    options()
 
 })();
