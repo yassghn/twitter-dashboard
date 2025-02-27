@@ -10,6 +10,7 @@
 body {
     width: 100%;
     height: 100%;
+    font-size: 2em;
 }
 
 div#options-container {
@@ -35,14 +36,36 @@ div#options-content {
     display: flex;
     flex-direction: column;
     position: relative;
+}
+
+div#options-header:hover {
+    background-color: #3b3b3b;
+    color: #cac4ca;
     cursor: pointer;
 }
 
-div#options-content:hover {
-    background-color: #3b3b3b;
-    color: #cac4ca;
+div#options-header {
+    margin-top: 5vh;
+    text-decoration: underline;
 }
 
-div#options-content span {
-    margin: 50px;
+div#options-content form {
+    margin-top: 5vh;
+}
+
+.option {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+textarea#whitelist {
+    width: 30em;
+    height: 20em;
+}
+
+button#save {
+    margin-top: 3em;
+    width: 5em;
+    height: 4em;
 }

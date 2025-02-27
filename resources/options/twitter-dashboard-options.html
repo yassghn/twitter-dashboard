@@ -7,7 +7,19 @@
   <body>
     <div id="options-container">
       <div id="options-content">
-        <span>twitter-dashboard options!</span>
+        <div id="options-header">
+          <span>twitter-dashboard options!</span>
+        </div>
+        <form>
+          <div class="option">
+            <label for="whitelist">whitelist: comma separated list of usernames</label>
+            <br/>
+            <textarea type="text" id="whitelist" name="whitelist"></textarea>
+          </div>
+          <div class="option">
+            <button id="save" type="button">save</button>
+          </div>
+        </form>
       </div>
     </div>
     <script src="twitter-dashboard-options.js"></script>
