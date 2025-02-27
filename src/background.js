@@ -55,6 +55,15 @@
         browser.webRequest.onResponseStarted.addListener(logRequestResponse, { urls: ['<all_urls>'] }, ['responseHeaders'])
     }
 
+    function removeTimelineItems(instructions, index, indices) {
+        // filter out aggregated indices
+        instructions[index].entries = instructions[index].entries.filter((entry, index) => {
+            if (indices.includes(index)) {
+                return true
+            }
+        })
+    }
+
     function whitelistUserTweets(data) {
         // get reference to instructions
         const instructions = data?.data?.user?.result?.timeline_v2?.timeline?.instructions
@@ -81,13 +90,39 @@
                 }
             }
         })
-        // filter out aggregated indices
-        instructions[2].entries = instructions[2].entries.filter((entry, index) => {
-            if (indices.includes(index)) {
-                return true
+        removeTimelineItems(instructions, 2, indices)
+        log(instructions[0].entries)
+        return data
+    }
+
+    function whitelistTweetDetails(data) {
+        // get reference to instructions
+        const instructions = data?.data?.threaded_conversation_with_injections_v2?.instructions
+        // interate instruction entries
+        //for (let entry of instructions[2].entries) {
+        let indices = []
+        // collect indices of entries to removed
+        instructions[0].entries.forEach((entry, index) => {
+            log(entry)
+            if (entry?.content?.entryType === "TimelineTimelineItem") {
+                // get screen_name of timeline item entry
+                let screen_name = ''
+                if (entry.content.itemContent.tweet_results !== undefined &&
+                    entry.content.itemContent.itemType !== 'TimelineTimelineCursor') {
+                    screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
+                }
+                // aggregate index to delete entry
+                if (screen_name != '') {
+                    log(screen_name)
+                    if (config.options.whitelist.includes(screen_name)) {
+                        indices.push(index)
+                    }
+                }
             }
         })
-        log(instructions[2].entries)
+        // filter out aggregated indices
+        removeTimelineItems(instructions, 0, indices)
+        log(instructions[0].entries)
         return data
     }
 
@@ -96,6 +131,8 @@
         switch (true) {
             case (target === config.apiTargets.userTweets):
                 return whitelistUserTweets(data)
+            case (target === config.apiTargets.tweetDetail):
+                return whitelistTweetDetails(data)
             default:
                 return undefined
         }
