@@ -144,8 +144,7 @@
 
         // many responses are split into large chunks
         // aggregate those chunks within an array
-        let dm = new Map()
-        dm.set(requestId, [])
+        let dataChunks = []
 
         filter.ondata = (event) => {
             // get event data
@@ -153,20 +152,20 @@
             log(`<*>[FILTER DATA: #${requestId}]:`)
             log(event)
             log(data)
-            dm.get(requestId).push(data)
+            dataChunks.push(data)
             //filter.write(encoder.encode(data))
         }
 
         filter.onstop = async (event) => {
             log(`<END>[REUQEST DETAILS: #]:${requestId}`)
             // check if we got data
-            if (dm.get(requestId).length > 0) {
+            if (dataChunks.length > 0) {
                 try {
                     log(`<END>[REUQEST DETAILS: #]:${requestId}`)
                     // check if we need to apply whitelist
                     if (config.options.whitelist != undefined) {
                         // get request json as a single json object
-                        let dataObj = JSON.parse(dm.get(requestId).join())
+                        let dataObj = JSON.parse(dataChunks.join())
                         log(dataObj)
                         // delete unwhitelisted entries
                         dataObj = applyWhiteList(dataObj, target)
