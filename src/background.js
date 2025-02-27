@@ -50,12 +50,23 @@
             // get event data
             let data = decoder.decode(event.data, { stream: true })
 
-            log(`filter data [id=${id}]:`)
-            log(event)
-            log(data)
-
             let newData = ''
             let needNewWrite = false
+
+            if (data.includes('pbs.twimg.com')) {
+
+                log('==========[BEGIN]=========')
+                log(`filter data [id=${id}]:`)
+                log(event)
+                log(data)
+
+                newData = ''
+                newData = data.replaceAll('pbs.twimg.com', '')
+                needNewWrite = true
+
+                log(newData)
+                log('==========[END]=========')
+            }
 
             // write new data
             if (needNewWrite)
@@ -106,8 +117,25 @@
         browser.webRequest.onResponseStarted.addListener(logRequestResponse, { urls: ['<all_urls>'] }, ['responseHeaders'])
     }
 
-    logAllRequests()
-    //logAllHeadersReceived()
-    //logAllRequestResponses()
+    function loadOptions() {
+        const options = {
+            whitelist: browser.storage.local.get('whitelist')
+        }
+        log(options)
+    }
+
+    function addOptionsListener() {
+        browser.storage.local.onChanged.addListener(loadOptions)
+    }
+
+    function startBackground() {
+        loadOptions()
+        addOptionsListener()
+        //logAllRequests()
+        //logAllHeadersReceived()
+        //logAllRequestResponses()
+    }
+
+    startBackground()
 
 })();
