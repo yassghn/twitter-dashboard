@@ -13,7 +13,8 @@
         apiTargets: {
             userTweets: 'UserTweets?',
             tweetDetail: 'TweetDetail?',
-            homeTimeline: 'HomeTimeline'
+            homeTimeline: 'HomeTimeline',
+            searchTimeline: 'SearchTimeline?'
         }
     }
 
@@ -169,6 +170,42 @@
         return data
     }
 
+    // whitelist home timeline
+    function whitelistSearchTimeline(data) {
+        // get reference to instructions
+        const instructions = data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions
+        // get entries
+        const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
+        const entries = instructions[index].entries
+        // interate instruction entries
+        //for (let entry of instructions[2].entries) {
+        let indices = []
+        // collect indices of entries to remove
+        entries.forEach((entry, i) => {
+            log(entry)
+            if (entry?.content?.entryType === "TimelineTimelineItem") {
+                // get screen_name of timeline item entry
+                let screen_name = ''
+                if (entry.content.itemContent.tweet_results.result.core == undefined) {
+                    screen_name = entry.content.itemContent.tweet_results.result.tweet.core.user_results.result.legacy.screen_name
+                }
+                else {
+                    screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
+                }
+                // aggregate index to delete entry
+                if (screen_name != '') {
+                    if (!config.options.whitelist.includes(screen_name)) {
+                        indices.push(i)
+                    }
+                }
+            }
+        })
+        // filter out aggregated indices
+        removeTimelineItems(instructions, index, indices)
+        log(instructions[index].entries)
+        return data
+    }
+
     function applyWhiteList(data, target) {
         // whitelist strategy based on api target
         switch (true) {
@@ -178,6 +215,8 @@
                 return whitelistTweetDetails(data)
             case (target === config.apiTargets.homeTimeline):
                 return whitelistHomeTimeline(data)
+            case (target === config.apiTargets.searchTimeline):
+                return whitelistSearchTimeline(data)
             default:
                 return undefined
         }
