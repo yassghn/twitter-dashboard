@@ -57,21 +57,20 @@
 
     function removeTimelineItems(instructions, index, indices) {
         // filter out aggregated indices
-        instructions[index].entries = instructions[index].entries.filter((entry, index) => {
-            if (indices.includes(index)) {
-                return true
-            }
-        })
+        instructions[index].entries = instructions[index].entries.filter((entry, index) => !indices.includes(index))
     }
 
     function whitelistUserTweets(data) {
         // get reference to instructions
         const instructions = data?.data?.user?.result?.timeline_v2?.timeline?.instructions
+        // search for entries
+        const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
+        const entries = instructions[index].entries
         // interate instruction entries
         //for (let entry of instructions[2].entries) {
         let indices = []
         // collect indices of entries to remove
-        instructions[2].entries.forEach((entry, index) => {
+        entries.forEach((entry, i) => {
             if (entry?.content?.entryType === "TimelineTimelineItem") {
                 log(entry)
                 // get screen_name of post
@@ -83,25 +82,26 @@
                 }
                 // aggregate index to delete entry
                 if (screen_name != '') {
-                    if (config.options.whitelist.includes(screen_name)) {
-                        indices.push(index)
+                    if (!config.options.whitelist.includes(screen_name)) {
+                        indices.push(i)
                     }
                 }
             }
         })
-        removeTimelineItems(instructions, 2, indices)
-        log(instructions[0].entries)
+        // todo: cannot remove whole entry, breaks tl loading
+        removeTimelineItems(instructions, index, indices)
         return data
     }
 
     function whitelistTweetDetails(data) {
         // get reference to instructions
-        const instructions = data?.data?.threaded_conversation_with_injections_v2?.instructions
+        const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
+        const entries = instructions[index].entries
         // interate instruction entries
         //for (let entry of instructions[2].entries) {
         let indices = []
         // collect indices of entries to remove
-        instructions[0].entries.forEach((entry, index) => {
+        entries.forEach((entry, i) => {
             log(entry)
             if (entry?.content?.entryType === "TimelineTimelineItem") {
                 // get screen_name of timeline item entry
@@ -113,15 +113,15 @@
                 // aggregate index to delete entry
                 if (screen_name != '') {
                     log(screen_name)
-                    if (config.options.whitelist.includes(screen_name)) {
-                        indices.push(index)
+                    if (!config.options.whitelist.includes(screen_name)) {
+                        indices.push(i)
                     }
                 }
             }
         })
         // filter out aggregated indices
-        removeTimelineItems(instructions, 0, indices)
-        log(instructions[0].entries)
+        removeTimelineItems(instructions, index, indices)
+        log(instructions[index].entries)
         return data
     }
 
@@ -186,8 +186,8 @@
         if (config.options.whitelistEnabled) {
             // only process configured api targets
             const target = isTargetUrl(requestDetails.url)
-            log(target)
             if (target !== undefined) {
+                log(`target: ${target}`)
                 log(`<START>[REUQEST DETAILS: #${requestDetails.requestId}]:`)
                 log(requestDetails)
                 filterResponse(requestDetails.requestId, target)
