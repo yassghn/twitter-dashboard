@@ -1,21 +1,53 @@
-/*
+/**
  * twitter-dashboard
  *
  * twitter-dashboard.js
+ *
+ * @module twitter-dashboard
  */
 import $ from 'jquery'
 
 (async () => {
     'use strict'
 
+    /**
+     * @memberof module:twitter-dashboard
+     * @typedef {css} string css
+     */
+    /**
+     * @memberof module:twitter-dashboard
+     * @typedef {html} string html
+     */
+
+    /**
+     * @memberof module:twitter-dashboard
+     * @type {configObject}
+     */
     const config = {
         projectName: 'twitter-dashboard'
     }
 
-    function log(msg) {
-        console.log(msg)
+    /**
+     * takes [upto] two arguments
+     * logs to stdout or stderr
+     * @memberof module:twitter-dashboard
+     * @param {*} msg object or string
+     * @param {boolean} [err] flag indicating to log to error
+     */
+    function log(msg, err = false) {
+        if (config.debug) {
+            if (!err)
+                console.log(msg)
+            else
+                console.error(msg)
+        }
     }
 
+    /**
+     * return dashboard css
+     * @memberof module:twitter-dashboard
+     * @returns {css} css string
+     */
     function getDashboardCss() {
         const dashboardCss =
             `* {
@@ -67,6 +99,11 @@ import $ from 'jquery'
         return dashboardCss
     }
 
+    /**
+     * return dashboard html
+     * @memberof module:twitter-dashboard
+     * @returns {html} html element string
+     */
     function getDashboardHtml() {
         const dashboardHtml =
             `<div id="dashboard-container">
@@ -79,6 +116,10 @@ import $ from 'jquery'
         return dashboardHtml
     }
 
+    /**
+     * insert style element with css into document body
+     * @memberof module:twitter-dashboard
+     */
     function insertCss() {
         let style = document.createElement('style')
         style.dataset.insertedBy = config.projectName
@@ -87,6 +128,10 @@ import $ from 'jquery'
         document.head.appendChild(style)
     }
 
+    /**
+     * load dashboard html/css
+     * @memberof module:twitter-dashboard
+     */
     function loadDashboard() {
         document.body.style.border = '5px red dashed'
         log(`LOOK AT THIS PIECE OF SHIT ${$('div')[0]}`)
@@ -94,6 +139,10 @@ import $ from 'jquery'
         $('div').eq(0).html(getDashboardHtml())
     }
 
+    /**
+     * main
+     * @memberof module:twitter-dashboard
+     */
     function twitterDashboard() {
         loadDashboard()
     }
