@@ -64,7 +64,7 @@
     function whitelistUserTweets(data) {
         // get reference to instructions
         const instructions = data?.data?.user?.result?.timeline_v2?.timeline?.instructions
-        // search for entries
+        // get entries
         const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
         const entries = instructions[index].entries
         // interate instruction entries
