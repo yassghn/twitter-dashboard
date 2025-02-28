@@ -12,7 +12,8 @@
         options: {},
         apiTargets: {
             userTweets: 'UserTweets?',
-            tweetDetail: 'TweetDetail?'
+            tweetDetail: 'TweetDetail?',
+            homeTimeline: 'HomeTimeline'
         }
     }
 
@@ -133,6 +134,26 @@
         return data
     }
 
+    // whitelist home timeline
+    function whitelistHomeTimeline(data) {
+        // get reference to instructions
+        const instructions = data?.data?.homeline
+        // get entries
+        const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
+        const entries = instructions[index].entries
+        // interate instruction entries
+        //for (let entry of instructions[2].entries) {
+        let indices = []
+        // collect indices of entries to remove
+        entries.forEach((entry, i) => {
+            log(entry)
+        })
+        // filter out aggregated indices
+        removeTimelineItems(instructions, index, indices)
+        log(instructions[index].entries)
+        return data
+    }
+
     function applyWhiteList(data, target) {
         // whitelist strategy based on api target
         switch (true) {
@@ -140,6 +161,8 @@
                 return whitelistUserTweets(data)
             case (target === config.apiTargets.tweetDetail):
                 return whitelistTweetDetails(data)
+            case (target === config.apiTargets.homeTimeline):
+                return whitelistHomeTimeline(data)
             default:
                 return undefined
         }
