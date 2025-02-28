@@ -27,6 +27,7 @@
 
     function isTargetUrl(url) {
         // uncomment to use all urls
+        log(url)
         //return true
         return Object.values(config.apiTargets).find((item) => url.includes(item))
     }
