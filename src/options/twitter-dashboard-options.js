@@ -1,5 +1,16 @@
+/**
+ * twitter-dashboard
+ *
+ * twitter-dashboard-options.js
+ *
+ * @module twitter-dashboard-options
+ */
 (async function(){
 
+    /**
+     * @memberof module:twitter-dashboard-options
+     * @type {configObject}
+     */
     const config = {
         debug: true,
         selectors: {
@@ -12,6 +23,13 @@
         options: {}
     }
 
+    /**
+     * takes [upto] two arguments
+     * logs to stdout or stderr
+     * @memberof module:twitter-dashboard-options
+     * @param {*} msg object or string
+     * @param {boolean} [err] flag indicating to log to error
+     */
     function log(msg, err = false) {
         if (config.debug) {
             if (!err)
@@ -21,6 +39,12 @@
         }
     }
 
+    /**
+     * format whitelist string for storage
+     * @memberof module:twitter-dashboard-options
+     * @param {string} text whitelist textarea text
+     * @returns {string} formatted whitelist string
+     */
     function formatWhitelist(text) {
         let ret = text.trim()
                       .replace(/\r?\n|\r/g, '')
@@ -30,6 +54,10 @@
         return ret
     }
 
+    /**
+     * save options to local storage
+     * @memberof module:twitter-dashboard-options
+     */
     async function saveOptions() {
         const enableWhitelist = document.querySelector(config.selectors.enableWhitelist).checked
         const whitelistText = formatWhitelist(document.querySelector(config.selectors.whitelistText).value)
@@ -41,12 +69,20 @@
         await browser.storage.local.set(options)
     }
 
+    /**
+     * easter egg
+     * @memberof module:twitter-dashboard-options
+     */
     function egg() {
         const menuItem = document.querySelector(config.selectors.default)
         menuItem.innerHTML =
             `<img src="../icons/twitter-dashboard-96.png"></img>`
     }
 
+    /**
+     * add click listeners to options items
+     * @memberof module:twitter-dashboard-options
+     */
     function addClickListeners() {
         const enableWhitelist = document.querySelector(config.selectors.enableWhitelist)
         enableWhitelist.addEventListener('change', (e) => {
@@ -65,6 +101,10 @@
         })
     }
 
+    /**
+     * load options from local storage
+     * @memberof module:twitter-dashboard-options
+     */
     async function loadOptions() {
         // get options from storage
         // get whitelistEnabled
@@ -78,6 +118,10 @@
         log(config.options)
     }
 
+    /**
+     * populate settings page with stored options
+     * @memberof module:twitter-dashboard-options
+     */
     async function populateSavedSettings() {
         // load options
         await loadOptions()
@@ -94,6 +138,11 @@
         }
     }
 
+    /**
+     * options
+     * main
+     * @memberof module:twitter-dashboard-options
+     */
     function options() {
         addClickListeners()
         populateSavedSettings()

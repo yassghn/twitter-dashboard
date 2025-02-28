@@ -1,12 +1,27 @@
-/*
+/**
 * twitter-dashboard
 *
 * background.js
+*
+* @module background
 */
-
 (async () => {
     'use strict'
 
+    /** @typedef {configObject} object config object */
+    /**
+     * @memberof module:background
+     * @typedef {twitterApiObject} object twitter api response object
+     */
+    /**
+     * @memberof module:background
+     * @typedef {webApiObject} object webapi object
+    */
+
+    /**
+     * @memberof module:background
+     * @type {configObject}
+     * */
     const config = {
         debug: true,
         options: {},
@@ -18,6 +33,13 @@
         }
     }
 
+    /**
+     * takes [upto] two arguments
+     * logs to stdout or stderr
+     * @memberof module:background
+     * @param {*} msg object or string
+     * @param {boolean} [err] flag indicating to log to error
+     */
     function log(msg, err = false) {
         if (config.debug) {
             if (!err)
@@ -27,6 +49,13 @@
         }
     }
 
+    /**
+     * takes url as string
+     * returns configured api target
+     * @memberof module:background
+     * @param {string} url
+     * @returns {string} string or undefined
+     */
     function isTargetUrl(url) {
         log(url)
         return Object.values(config.apiTargets).find((item) => url.includes(item))
@@ -56,12 +85,33 @@
         browser.webRequest.onResponseStarted.addListener(logRequestResponse, { urls: ['<all_urls>'] }, ['responseHeaders'])
     }
 
+    /**
+     * takes 3 arguments
+     * filters out entries from twitterApiObject instructions
+     * @memberof module:background
+     * @param {twitterApiObject} instructions twitter api object
+     * @param {number} index positive integer representing element in instructions
+     * @param {number[]} indices aggregated indices to filter out of instructions
+     */
     function removeTimelineItems(instructions, index, indices) {
         // filter out aggregated indices
         instructions[index].entries = instructions[index].entries.filter((entry, index) => !indices.includes(index))
     }
 
-    // user tweets api target strategy
+    /**
+     * takes 3 arguments
+     * @memberof module:background
+     * @callback strategyCallback
+     * @param {twitterApiObject} entry twitter api object
+     * @param {number[]} indices array to aggregate entry indices for filtering
+     * @param {number} index positive integer representing current index of entry
+     */
+
+    /**
+     * user tweets api target whitelisting strategy
+     * @memberof module:background
+     * @type {strategyCallback}
+     */
     function whitelistUserTweets(entry, indices, index) {
         if (entry?.content?.entryType === "TimelineTimelineItem") {
             log(entry)
@@ -83,7 +133,11 @@
         }
     }
 
-    // tweet details api target strategy
+    /**
+     * tweet details api target whitelisting strategy
+     * @memberof module:background
+     * @type {strategyCallback}
+     */
     function whitelistTweetDetails(entry, indices, index) {
         if (entry?.content?.entryType === "TimelineTimelineItem" ||
             entry?.content?.entryType === "TimelineTimelineModule") {
@@ -104,7 +158,11 @@
         }
     }
 
-    // home timeline api target strategy
+    /**
+     * hometimeline api target whitelisting strategy
+     * @memberof module:background
+     * @type {strategyCallback}
+     */
     function whitelistHomeTimeline(entry, indices, index) {
         if (entry?.content?.entryType === "TimelineTimelineItem") {
             // get screen_name of timeline item entry
@@ -124,6 +182,15 @@
         }
     }
 
+    /**
+     * takes 3 arguments
+     * filter twitter api object based on api target strategy
+     * @memberof module:background
+     * @param {twitterApiObject} data twitter api object
+     * @param {twitterApiObject} instructions twitter api object
+     * @param {strategyCallback} strategy api target strategy callback function
+     * @returns {twitterApiObject} filtered twitter api object
+     */
     function whitelist(data, instructions, strategy) {
         // get entries
         const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
@@ -141,6 +208,14 @@
         return data
     }
 
+    /**
+     * takes two arguments
+     * filter twitter api data object based on target strategy callback
+     * @memberof module:background
+     * @param {twitterApiObject} data twitter api object
+     * @param {string} target configured api target
+     * @returns {twitterApiObject} filtered twitter api object
+     */
     function applyWhiteList(data, target) {
         // init instructions
         let instructions = {}
@@ -163,6 +238,13 @@
         }
     }
 
+    /**
+     * takes 2 arguments
+     * aggregate request data chunks and filter twitter api data object
+     * @memberof module:background
+     * @param {number} requestId positive integer representing request id
+     * @param {string} target configured api target
+     */
     function filterResponse(requestId, target) {
         let filter = browser.webRequest.filterResponseData(requestId)
         let decoder = new TextDecoder('utf-8')
@@ -206,6 +288,12 @@
         }
     }
 
+    /**
+     * takes 1 argument
+     * initiate filtering responses for configured api targets
+     * @memberof module:background
+     * @param {webApiObject} requestDetails webapi object
+     */
     function requestListener(requestDetails) {
         // check if whitelisting is enabled
         if (config.options.whitelistEnabled) {
@@ -220,10 +308,18 @@
         }
     }
 
+    /**
+     * add blocking request listener for all urls and attach request body
+     * @memberof module:background
+     */
     function addRequestListener() {
         browser.webRequest.onBeforeRequest.addListener(requestListener, { urls: ['<all_urls>'] }, ['blocking', 'requestBody'])
     }
 
+    /**
+     * get options from local storage
+     * @memberof module:background
+     */
     async function loadOptions() {
         // get options from storage
         // get whitelistEnabled
@@ -237,10 +333,19 @@
         log(config.options)
     }
 
+    /**
+     * listen for local storage changes
+     * @memberof module:background
+     */
     function addOptionsListener() {
         browser.storage.local.onChanged.addListener(loadOptions)
     }
 
+    /**
+     * main
+     * begin twitter-dashboard background processing
+     * @memberof module:background
+     */
     function startBackground() {
         loadOptions()
         addOptionsListener()
