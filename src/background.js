@@ -204,10 +204,11 @@
                     }
                 } catch (e) {
                     log(e, true)
+                } finally {
+                    // disconnect filter
+                    filter.disconnect()
                 }
             }
-            // disconnect filter
-            filter.disconnect()
         }
     }
 
