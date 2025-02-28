@@ -28,9 +28,7 @@
     }
 
     function isTargetUrl(url) {
-        // uncomment to use all urls
         log(url)
-        //return true
         return Object.values(config.apiTargets).find((item) => url.includes(item))
     }
 
@@ -181,11 +179,9 @@
             log(event)
             log(data)
             dataChunks.push(data)
-            //filter.write(encoder.encode(data))
         }
 
         filter.onstop = async (event) => {
-            log(`<END>[REUQEST DETAILS: #]:${requestId}`)
             try {
                 log(`<END>[REUQEST DETAILS: #]:${requestId}`)
                 // check if we need to apply whitelist
