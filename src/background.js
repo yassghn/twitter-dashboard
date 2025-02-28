@@ -108,16 +108,19 @@
         // collect indices of entries to remove
         entries.forEach((entry, i) => {
             log(entry)
-            if (entry?.content?.entryType === "TimelineTimelineItem") {
+            log(JSON.stringify(entry).includes('18USCode333'))
+            if (entry?.content?.entryType === "TimelineTimelineItem" ||
+                entry?.content?.entryType === "TimelineTimelineModule") {
                 // get screen_name of timeline item entry
                 let screen_name = ''
-                if (entry.content.itemContent.tweet_results !== undefined &&
+                if (entry.content.itemContent == undefined) {
+                    screen_name = entry.content.items[0].item.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
+                } else if (entry.content.itemContent.tweet_results !== undefined &&
                     entry.content.itemContent.itemType !== 'TimelineTimelineCursor') {
                     screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
                 }
                 // aggregate index to delete entry
                 if (screen_name != '') {
-                    log(screen_name)
                     if (!config.options.whitelist.includes(screen_name)) {
                         indices.push(i)
                     }
