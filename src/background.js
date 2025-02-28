@@ -188,12 +188,12 @@
 
         filter.onstop = async (event) => {
             log(`<END>[REUQEST DETAILS: #]:${requestId}`)
-            // check if we got data
-            if (dataChunks.length > 0) {
-                try {
-                    log(`<END>[REUQEST DETAILS: #]:${requestId}`)
-                    // check if we need to apply whitelist
-                    if (config.options.whitelist != undefined) {
+            try {
+                log(`<END>[REUQEST DETAILS: #]:${requestId}`)
+                // check if we need to apply whitelist
+                if (config.options.whitelist != undefined) {
+                    // check if we got data
+                    if (dataChunks.length > 0) {
                         // get request json as a single json object
                         let dataObj = JSON.parse(dataChunks.join())
                         log(dataObj)
@@ -202,12 +202,12 @@
                         log(dataObj)
                         filter.write(encoder.encode(JSON.stringify(dataObj)))
                     }
-                } catch (e) {
-                    log(e, true)
-                } finally {
-                    // disconnect filter
-                    filter.disconnect()
                 }
+            } catch (e) {
+                log(e, true)
+            } finally {
+                // disconnect filter
+                filter.disconnect()
             }
         }
     }
