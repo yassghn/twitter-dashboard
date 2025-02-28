@@ -136,7 +136,7 @@
     // whitelist home timeline
     function whitelistHomeTimeline(data) {
         // get reference to instructions
-        const instructions = data?.data?.homeline
+        const instructions = data?.data?.home?.home_timeline_urt?.instructions
         // get entries
         const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
         const entries = instructions[index].entries
@@ -146,6 +146,22 @@
         // collect indices of entries to remove
         entries.forEach((entry, i) => {
             log(entry)
+            if (entry?.content?.entryType === "TimelineTimelineItem") {
+                // get screen_name of timeline item entry
+                let screen_name = ''
+                if (entry.content.itemContent.tweet_results.result.core == undefined) {
+                    screen_name = entry.content.itemContent.tweet_results.result.tweet.core.user_results.result.legacy.screen_name
+                }
+                else {
+                    screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
+                }
+                // aggregate index to delete entry
+                if (screen_name != '') {
+                    if (!config.options.whitelist.includes(screen_name)) {
+                        indices.push(i)
+                    }
+                }
+            }
         })
         // filter out aggregated indices
         removeTimelineItems(instructions, index, indices)
