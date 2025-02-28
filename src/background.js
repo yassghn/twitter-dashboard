@@ -222,8 +222,8 @@
         loadOptions()
         addOptionsListener()
         addRequestListener()
-        logAllHeadersReceived()
-        logAllRequestResponses()
+        //logAllHeadersReceived()
+        //logAllRequestResponses()
     }
 
     startBackground()
