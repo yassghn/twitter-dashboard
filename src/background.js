@@ -63,142 +63,79 @@
         instructions[index].entries = instructions[index].entries.filter((entry, index) => !indices.includes(index))
     }
 
-    function whitelistUserTweets(data) {
-        // get reference to instructions
-        const instructions = data?.data?.user?.result?.timeline_v2?.timeline?.instructions
-        // get entries
-        const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
-        const entries = instructions[index].entries
-        // interate instruction entries
-        //for (let entry of instructions[2].entries) {
-        let indices = []
-        // collect indices of entries to remove
-        entries.forEach((entry, i) => {
-            if (entry?.content?.entryType === "TimelineTimelineItem") {
-                log(entry)
-                // get screen_name of post
-                let screen_name = ''
-                if (entry.content.itemContent.tweet_results.result.legacy == undefined) {
-                    screen_name = entry.content.itemContent.tweet_results.result.tweet.legacy.retweeted_status_result.result.tweet.core.user_results.result.legacy.screen_name
-                } else if (entry.content.itemContent.tweet_results.result.legacy.retweeted_status_result == undefined) {
-                    screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
-                } else {
-                    screen_name = entry.content.itemContent.tweet_results.result.legacy.retweeted_status_result.result.core.user_results.result.legacy.screen_name
-                }
-                // aggregate index to delete entry
-                if (screen_name != '') {
-                    if (!config.options.whitelist.includes(screen_name)) {
-                        indices.push(i)
-                    }
+    // user tweets api target strategy
+    function whitelistUserTweets(entry, indices, index) {
+        if (entry?.content?.entryType === "TimelineTimelineItem") {
+            log(entry)
+            // get screen_name of post
+            let screen_name = ''
+            if (entry.content.itemContent.tweet_results.result.legacy == undefined) {
+                screen_name = entry.content.itemContent.tweet_results.result.tweet.legacy.retweeted_status_result.result.tweet.core.user_results.result.legacy.screen_name
+            } else if (entry.content.itemContent.tweet_results.result.legacy.retweeted_status_result == undefined) {
+                screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
+            } else {
+                screen_name = entry.content.itemContent.tweet_results.result.legacy.retweeted_status_result.result.core.user_results.result.legacy.screen_name
+            }
+            // aggregate index to delete entry
+            if (screen_name != '') {
+                if (!config.options.whitelist.includes(screen_name)) {
+                    indices.push(index)
                 }
             }
-        })
-        // todo: cannot remove whole entry, breaks tl loading
-        removeTimelineItems(instructions, index, indices)
-        return data
+        }
     }
 
-    function whitelistTweetDetails(data) {
-        // get reference to instructions
-        const instructions = data?.data?.threaded_conversation_with_injections_v2?.instructions
+    // tweet details api target strategy
+    function whitelistTweetDetails(entry, indices, index) {
+        if (entry?.content?.entryType === "TimelineTimelineItem" ||
+            entry?.content?.entryType === "TimelineTimelineModule") {
+            // get screen_name of timeline item entry
+            let screen_name = ''
+            if (entry.content.itemContent == undefined) {
+                screen_name = entry.content.items[0].item.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
+            } else if (entry.content.itemContent.tweet_results !== undefined &&
+                entry.content.itemContent.itemType !== 'TimelineTimelineCursor') {
+                screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
+            }
+            // aggregate index to delete entry
+            if (screen_name != '') {
+                if (!config.options.whitelist.includes(screen_name)) {
+                    indices.push(index)
+                }
+            }
+        }
+    }
+
+    // home timeline api target strategy
+    function whitelistHomeTimeline(entry, indices, index) {
+        if (entry?.content?.entryType === "TimelineTimelineItem") {
+            // get screen_name of timeline item entry
+            let screen_name = ''
+            if (entry.content.itemContent.tweet_results.result.core == undefined) {
+                screen_name = entry.content.itemContent.tweet_results.result.tweet.core.user_results.result.legacy.screen_name
+            }
+            else {
+                screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
+            }
+            // aggregate index to delete entry
+            if (screen_name != '') {
+                if (!config.options.whitelist.includes(screen_name)) {
+                    indices.push(index)
+                }
+            }
+        }
+    }
+
+    function whitelist(data, instructions, strategy) {
         // get entries
         const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
         const entries = instructions[index].entries
         // interate instruction entries
-        //for (let entry of instructions[2].entries) {
         let indices = []
         // collect indices of entries to remove
         entries.forEach((entry, i) => {
             log(entry)
-            if (entry?.content?.entryType === "TimelineTimelineItem" ||
-                entry?.content?.entryType === "TimelineTimelineModule") {
-                // get screen_name of timeline item entry
-                let screen_name = ''
-                if (entry.content.itemContent == undefined) {
-                    screen_name = entry.content.items[0].item.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
-                } else if (entry.content.itemContent.tweet_results !== undefined &&
-                    entry.content.itemContent.itemType !== 'TimelineTimelineCursor') {
-                    screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
-                }
-                // aggregate index to delete entry
-                if (screen_name != '') {
-                    if (!config.options.whitelist.includes(screen_name)) {
-                        indices.push(i)
-                    }
-                }
-            }
-        })
-        // filter out aggregated indices
-        removeTimelineItems(instructions, index, indices)
-        log(instructions[index].entries)
-        return data
-    }
-
-    // whitelist home timeline
-    function whitelistHomeTimeline(data) {
-        // get reference to instructions
-        const instructions = data?.data?.home?.home_timeline_urt?.instructions
-        // get entries
-        const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
-        const entries = instructions[index].entries
-        // interate instruction entries
-        //for (let entry of instructions[2].entries) {
-        let indices = []
-        // collect indices of entries to remove
-        entries.forEach((entry, i) => {
-            log(entry)
-            if (entry?.content?.entryType === "TimelineTimelineItem") {
-                // get screen_name of timeline item entry
-                let screen_name = ''
-                if (entry.content.itemContent.tweet_results.result.core == undefined) {
-                    screen_name = entry.content.itemContent.tweet_results.result.tweet.core.user_results.result.legacy.screen_name
-                }
-                else {
-                    screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
-                }
-                // aggregate index to delete entry
-                if (screen_name != '') {
-                    if (!config.options.whitelist.includes(screen_name)) {
-                        indices.push(i)
-                    }
-                }
-            }
-        })
-        // filter out aggregated indices
-        removeTimelineItems(instructions, index, indices)
-        log(instructions[index].entries)
-        return data
-    }
-
-    // whitelist home timeline
-    function whitelistSearchTimeline(data) {
-        // get reference to instructions
-        const instructions = data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions
-        // get entries
-        const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
-        const entries = instructions[index].entries
-        // interate instruction entries
-        //for (let entry of instructions[2].entries) {
-        let indices = []
-        // collect indices of entries to remove
-        entries.forEach((entry, i) => {
-            log(entry)
-            if (entry?.content?.entryType === "TimelineTimelineItem") {
-                // get screen_name of timeline item entry
-                let screen_name = ''
-                if (entry.content.itemContent.tweet_results.result.core == undefined) {
-                    screen_name = entry.content.itemContent.tweet_results.result.tweet.core.user_results.result.legacy.screen_name
-                }
-                else {
-                    screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
-                }
-                // aggregate index to delete entry
-                if (screen_name != '') {
-                    if (!config.options.whitelist.includes(screen_name)) {
-                        indices.push(i)
-                    }
-                }
-            }
+            strategy(entry, indices, i)
         })
         // filter out aggregated indices
         removeTimelineItems(instructions, index, indices)
@@ -207,16 +144,22 @@
     }
 
     function applyWhiteList(data, target) {
+        // init instructions
+        let instructions = {}
         // whitelist strategy based on api target
         switch (true) {
             case (target === config.apiTargets.userTweets):
-                return whitelistUserTweets(data)
+                instructions = data?.data?.user?.result?.timeline_v2?.timeline?.instructions
+                return whitelist(data, instructions, whitelistUserTweets)
             case (target === config.apiTargets.tweetDetail):
-                return whitelistTweetDetails(data)
+                instructions = data?.data?.threaded_conversation_with_injections_v2?.instructions
+                return whitelist(data, instructions, whitelistTweetDetails)
             case (target === config.apiTargets.homeTimeline):
-                return whitelistHomeTimeline(data)
+                instructions = data?.data?.home?.home_timeline_urt?.instructions
+                return whitelist(data, instructions, whitelistHomeTimeline)
             case (target === config.apiTargets.searchTimeline):
-                return whitelistSearchTimeline(data)
+                instructions = data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions
+                return whitelist(data, instructions, whitelistHomeTimeline)
             default:
                 return undefined
         }
