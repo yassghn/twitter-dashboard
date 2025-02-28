@@ -195,7 +195,7 @@
                     // check if we got data
                     if (dataChunks.length > 0) {
                         // get request json as a single json object
-                        let dataObj = JSON.parse(dataChunks.join())
+                        let dataObj = JSON.parse(dataChunks.join(''))
                         log(dataObj)
                         // delete unwhitelisted entries
                         dataObj = applyWhiteList(dataObj, target)
