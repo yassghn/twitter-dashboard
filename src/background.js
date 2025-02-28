@@ -109,7 +109,6 @@
         // collect indices of entries to remove
         entries.forEach((entry, i) => {
             log(entry)
-            log(JSON.stringify(entry).includes('18USCode333'))
             if (entry?.content?.entryType === "TimelineTimelineItem" ||
                 entry?.content?.entryType === "TimelineTimelineModule") {
                 // get screen_name of timeline item entry
