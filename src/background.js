@@ -98,6 +98,8 @@
 
     function whitelistTweetDetails(data) {
         // get reference to instructions
+        const instructions = data?.data?.threaded_conversation_with_injections_v2?.instructions
+        // get entries
         const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
         const entries = instructions[index].entries
         // interate instruction entries
