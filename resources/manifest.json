@@ -8,6 +8,7 @@
         "48": "icons/twitter-dashboard-48.png",
         "96": "icons/twitter-dashboard-96.png"
     },
+    "browser_specific_settings": {"gecko": {"id": "{89b18a7c-741a-411d-a9ee-93ce24afc80a}"}},
     "permissions": [
         "storage",
         "webRequest",
