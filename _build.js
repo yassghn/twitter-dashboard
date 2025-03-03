@@ -10,6 +10,8 @@ import fs from 'fs-extra'
 import minimist from 'minimist'
 import { exit } from 'process'
 import * as sass from 'sass'
+import postcss from 'postcss'
+import autoprefixer from 'autoprefixer'
 
 // get name & version from package.json
 import packagejson from './package.json' with {type: 'json'}
@@ -48,8 +50,10 @@ function compileSass() {
         const files = globSync(config.src.sass)
         for (let file of files) {
             const result = sass.compile(file)
+            const ap = autoprefixer('last 3 version')
+            const prefixed = postcss([ap]).process(result.css.toString())
             const dest = (config.dirs.ext+file.replace('src', '')).replace('scss', 'css')
-            fs.writeFileSync(dest, result.css)
+            fs.writeFileSync(dest, prefixed.css)
         }
     } catch (e) {
         console.error(e)
