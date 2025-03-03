@@ -95,7 +95,7 @@ import sanitizeHtml from 'sanitize-html'
         const template = document.querySelector(config.selectors.dashboardTemplate)
         const clone = template.content.cloneNode(true)
         // remove existing html
-        $('div').eq(0).html('')
+        $('div').eq(0).html(sanitizeHtml(''))
         // append
         document.body.appendChild(clone)
     }
