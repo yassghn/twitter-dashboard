@@ -6,6 +6,7 @@
  * @module twitter-dashboard
  */
 import $ from 'jquery'
+import sanitizeHtml from 'sanitize-html'
 
 (async () => {
     'use strict'
@@ -24,7 +25,11 @@ import $ from 'jquery'
      * @type {configObject}
      */
     const config = {
-        projectName: 'twitter-dashboard'
+        debug: true,
+        projectName: 'twitter-dashboard',
+        selectors: {
+            dashboardTemplate: '#dashboard-template'
+        }
     }
 
     /**
@@ -48,83 +53,62 @@ import $ from 'jquery'
      * @memberof module:twitter-dashboard
      * @returns {css} css string
      */
-    function getDashboardCss() {
-        const dashboardCss =
-            `* {
-                padding: 0;
-                margin: 0;
-            }
-            body {
-                background-color: #1b1b1b;
-                color: #cac4c4;
-                overflow-x: hidden;
-                overflow-y: auto;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
-            div#dashboard-container {
-                position: absolute;
-                display: -webkit-box;
-                display: -ms-flexbox;
-                display: flex;
-                z-index: -1;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                -webkit-box-pack: center;
-                -ms-flex-pack: center;
-                justify-content: center;
-                -webkit-box-align: center;
-                -ms-flex-align: center;
-                align-items: center;
-                text-align: center;
-            }
-            div#content-text {
-                display: inline-block;
-                margin: 0 5px;
-            }
-            div#content-text span {
-                font-family: "Trebuchet MS", sans-serif;
-                font-style: normal;
-                font-display: swap;
-                font-weight: 500;
-                font-size: 100px;
-                line-height: 0;
-                letter-spacing: 2px;
-                text-decoration: underline;
-            }`
-        return dashboardCss
+    async function getDashboardCss() {
+        // fetch css
+        const url = browser.runtime.getURL('/templates/dashboard.css')
+        const css = (await (await fetch(url)).text())
+        return css
     }
 
     /**
-     * return dashboard html
+     * return dashboard template
      * @memberof module:twitter-dashboard
      * @returns {html} html element string
      */
-    function getDashboardHtml() {
-        const dashboardHtml =
-            `<div id="dashboard-container">
-                <div id="content-container">
-                    <div id="content-text">
-                        <span>FUCK THIS PIECE OF SHIT PLATFORM</span>
-                    </div>
-                </div>
-            </div>`
-        return dashboardHtml
+    async function getDashboardTemplate() {
+        // fetch template
+        const url = browser.runtime.getURL('/templates/dashboard.html')
+        const dashboardTemplate = (await (await fetch(url)).text())
+        // sanitize
+        const options = {
+            allowedTags: sanitizeHtml.defaults.allowedTags.concat(['template']),
+            allowedAttributes: sanitizeHtml.defaults.allowedAttributes
+        }
+        options.allowedAttributes.template = ['id']
+        options.allowedAttributes.div = ['id']
+        const sanitized = sanitizeHtml(dashboardTemplate, options)
+        return sanitized
+    }
+
+    /**
+     * insert dashboard html
+     * @memberof module:twitter-dashboard
+     */
+    async function insertHtml() {
+        // get template
+        const dashboardTemplate = await getDashboardTemplate()
+        // insert template to shadow dom
+        const range = document.createRange()
+        const frag = range.createContextualFragment(dashboardTemplate)
+        document.body.appendChild(frag)
+        // clone template
+        const template = document.querySelector(config.selectors.dashboardTemplate)
+        const clone = template.content.cloneNode(true)
+        // remove existing html
+        $('div').eq(0).html('')
+        // append
+        document.body.appendChild(clone)
     }
 
     /**
      * insert style element with css into document body
      * @memberof module:twitter-dashboard
      */
-    function insertCss() {
+    async function insertCss() {
         let style = document.createElement('style')
         style.dataset.insertedBy = config.projectName
         style.dataset.role = 'features'
-        style.textContent = getDashboardCss()
+        style.textContent = await getDashboardCss()
         document.head.appendChild(style)
     }
 
@@ -136,7 +120,7 @@ import $ from 'jquery'
         document.body.style.border = '5px red dashed'
         log(`LOOK AT THIS PIECE OF SHIT ${$('div')[0]}`)
         insertCss()
-        $('div').eq(0).html(getDashboardHtml())
+        insertHtml()
     }
 
     /**
