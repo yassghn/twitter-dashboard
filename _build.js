@@ -85,10 +85,10 @@ function build() {
     fs.ensureDirSync(config.dirs.ext)
     // copy js
     copyJs()
-    // compile sass
-    compileSass()
     // prepare webext package
     webextPrepare()
+    // compile sass
+    compileSass()
     // zip it
     zipit()
     // exit process success
