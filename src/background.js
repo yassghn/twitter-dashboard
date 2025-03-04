@@ -118,7 +118,11 @@
             // get screen_name of post
             let screen_name = ''
             if (entry.content.itemContent.tweet_results.result.legacy == undefined) {
-                screen_name = entry.content.itemContent.tweet_results.result.tweet.legacy.retweeted_status_result.result.tweet.core.user_results.result.legacy.screen_name
+                if (entry.content.itemContent.tweet_results.result.tweet.legacy.retweeted_status_result == undefined) {
+                    screen_name = entry.content.itemContent.tweet_results.result.tweet.core.user_results.result.legacy.screen_name
+                } else {
+                    screen_name = entry.content.itemContent.tweet_results.result.tweet.legacy.retweeted_status_result.result.tweet.core.user_results.result.legacy.screen_name
+                }
             } else if (entry.content.itemContent.tweet_results.result.legacy.retweeted_status_result == undefined) {
                 screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
             } else {
