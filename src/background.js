@@ -112,6 +112,19 @@
 
     /**
      * takes 3 arguments
+     * filters out usersResults from twitterApiObject instructions
+     * @memberof module:background
+     * @param {twitterApiObject} instructions twitter api object
+     * @param {number} index positive integer representing element in instructions
+     * @param {number[]} indices aggregated indices to filter out of instructions
+     */
+    function removeAlerts(instructions, index, indices) {
+        // filter out aggregated indices
+        instructions[index].usersResults = instructions[index].usersResults.filter((entry, index) => !indices.includes(index))
+    }
+
+    /**
+     * takes 3 arguments
      * @memberof module:background
      * @callback strategyCallback
      * @param {twitterApiObject} entry twitter api object
@@ -200,6 +213,47 @@
 
     /**
      * takes 3 arguments
+     * @memberof module:background
+     * @param {twitterApiObject} result twitter api object
+     * @param {number[]} indices array to aggregate entry indices for filtering
+     * @param {number} index positive integer representing current index of entry
+     */
+    function whitelistAlerts(result, indices, index) {
+        let screen_name = result.result.legacy.screen_name
+        if (!config.options.whitelist.includes(screen_name)) {
+            indices.push(index)
+        }
+    }
+
+    /**
+     * takes 2 arguments
+     * filter twitter api object
+     * @memberof module:background
+     * @param {twitterApiObject} data twitter api object
+     * @param {twitterApiObject} instructions twitter api object
+     * @returns {twitterApiObject} filtered twitter api object
+     */
+    function whitelistTimelineShowAlert(data, instructions) {
+        // get entries
+        const index = instructions.findIndex((item) => item.type === 'TimelineShowAlert')
+        if (index != -1) {
+            const usersResults = instructions[index].usersResults
+            // interate instruction usersresults
+            let indices = []
+            // collect indices of results to remove
+            usersResults.forEach((result, i) => {
+                logObj(result)
+                whitelistAlerts(result, indices, i)
+            })
+            // filter out aggregated indices
+            removeAlerts(instructions, index, indices)
+            logObj(instructions[index].usersResults)
+        }
+        return data
+    }
+
+    /**
+     * takes 3 arguments
      * filter twitter api object based on api target strategy
      * @memberof module:background
      * @param {twitterApiObject} data twitter api object
@@ -245,6 +299,7 @@
                 return whitelist(data, instructions, whitelistTweetDetails)
             case (target === config.apiTargets.homeTimeline):
                 instructions = data?.data?.home?.home_timeline_urt?.instructions
+                whitelistTimelineShowAlert(data, instructions)
                 return whitelist(data, instructions, whitelistHomeTimeline)
             case (target === config.apiTargets.searchTimeline):
                 instructions = data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions
