@@ -90,7 +90,8 @@ import sanitizeHtml from 'sanitize-html'
         // insert template to shadow dom
         const range = document.createRange()
         const frag = range.createContextualFragment(dashboardTemplate)
-        document.body.appendChild(frag)
+        const sanitized = sanitizeHtml(frag)
+        document.body.appendChild(sanitized)
         // clone template
         const template = document.querySelector(config.selectors.dashboardTemplate)
         const clone = template.content.cloneNode(true)
