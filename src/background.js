@@ -77,7 +77,7 @@
     function logHeadersReceived(headerDetails) {
         if (isTargetUrl(headerDetails.url)) {
             log(`<START>[HEADERS RECEIVED: #${headerDetails.requestId}]: ${headerDetails.url}`)
-            log(headerDetails)
+            logObj(headerDetails)
         }
     }
 
@@ -89,7 +89,7 @@
     function logRequestResponse(responseDetails) {
         if (isTargetUrl(responseDetails.url)) {
             log(`<START>[RESPONSE DETAILS: #${responseDetails.requestId}]: ${responseDetails.url}`)
-            log(responseDetails)
+            logObj(responseDetails)
         }
     }
 
@@ -215,12 +215,12 @@
         let indices = []
         // collect indices of entries to remove
         entries.forEach((entry, i) => {
-            log(entry)
+            logObj(entry)
             strategy(entry, indices, i)
         })
         // filter out aggregated indices
         removeTimelineItems(instructions, index, indices)
-        log(instructions[index].entries)
+        logObj(instructions[index].entries)
         return data
     }
 
@@ -274,8 +274,8 @@
             // get event data
             let data = decoder.decode(event.data, { stream: true })
             log(`<*>[FILTER DATA: #${requestId}]:`)
-            log(event)
-            log(data)
+            logObj(event)
+            //logObj(data)
             dataChunks.push(data)
         }
 
@@ -288,10 +288,10 @@
                     if (dataChunks.length > 0) {
                         // get request json as a single json object
                         let dataObj = JSON.parse(dataChunks.join(''))
-                        log(dataObj)
+                        logObj(dataObj)
                         // delete unwhitelisted entries
                         dataObj = applyWhiteList(dataObj, target)
-                        log(dataObj)
+                        logObj(dataObj)
                         filter.write(encoder.encode(JSON.stringify(dataObj)))
                     }
                 }
@@ -318,7 +318,7 @@
             if (target !== undefined) {
                 log(`target: ${target}`)
                 log(`<START>[REUQEST DETAILS: #${requestDetails.requestId}]:`)
-                log(requestDetails)
+                logObj(requestDetails)
                 filterResponse(requestDetails.requestId, target)
             }
         }
@@ -346,7 +346,7 @@
         if (whitelist != undefined) {
             config.options.whitelist = whitelist.whitelist
         }
-        log(config.options)
+        logObj(config.options)
     }
 
     /**
