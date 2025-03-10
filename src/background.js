@@ -50,6 +50,18 @@
     }
 
     /**
+     * takes [upto] two arguments
+     * use console.dir to log an object with a specified depth
+     * @param {*} obj object
+     * @param {number} depth number indicating object depth to log
+     */
+    function logObj(obj, depth = null) {
+        if (config.debug) {
+            console.dir(obj, { depth: depth }, true)
+        }
+    }
+
+    /**
      * takes url as string
      * returns configured api target
      * @memberof module:background
