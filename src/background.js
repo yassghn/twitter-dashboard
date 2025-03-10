@@ -242,7 +242,7 @@
             let indices = []
             // collect indices of results to remove
             usersResults.forEach((result, i) => {
-                logObj(result)
+                //logObj(result)
                 whitelistAlerts(result, indices, i)
             })
             // filter out aggregated indices
@@ -269,7 +269,7 @@
         let indices = []
         // collect indices of entries to remove
         entries.forEach((entry, i) => {
-            logObj(entry)
+            //logObj(entry)
             strategy(entry, indices, i)
         })
         // filter out aggregated indices
@@ -328,8 +328,8 @@
         filter.ondata = (event) => {
             // get event data
             let data = decoder.decode(event.data, { stream: true })
-            log(`<*>[FILTER DATA: #${requestId}]:`)
-            logObj(event)
+            //log(`<*>[FILTER DATA: #${requestId}]:`)
+            //logObj(event)
             //logObj(data)
             dataChunks.push(data)
         }
