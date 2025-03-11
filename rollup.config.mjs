@@ -38,4 +38,12 @@ export default [{
         name: 'twitterDashboardPopup'
     },
     plugins: [resolve(), cjs(), nodePolyfills()]
+},{
+    input: 'src/background.js',
+    output: {
+        file: 'dist/rolledup/background.js',
+        format: 'iife',
+        name: 'background'
+    },
+    plugins: [resolve(), cjs(), nodePolyfills()]
 }]
