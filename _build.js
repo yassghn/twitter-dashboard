@@ -25,7 +25,7 @@ const config = {
         in: ['resources/', 'dist/rolledup',]
     },
     src: {
-        js: ['src/**/*.js'],
+        js: ['src/**/*.js', 'src/**/*.mjs'],
         sass: ['src/**/*.scss']
     }
 }
