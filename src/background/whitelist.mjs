@@ -184,6 +184,37 @@ function applyWhiteList(data, instructions, strategy) {
 }
 
 /**
+ * takes two arguments
+ * filter twitter api data object based on target strategy callback
+ * @memberof background.module:whitelist
+ * @param {twitterApiObject} data twitter api object
+ * @param {string} target configured api target
+ * @returns {twitterApiObject} filtered twitter api object
+ */
+function applyWhitelistStrategy(data, target) {
+	// init instructions
+	let instructions = {}
+	// whitelist strategy based on api target
+	switch (true) {
+		case (target === config.apiTargets.userTweets):
+			instructions = data?.data?.user?.result?.timeline_v2?.timeline?.instructions
+			return applyWhiteList(data, instructions, whitelistUserTweets)
+		case (target === config.apiTargets.tweetDetail):
+			instructions = data?.data?.threaded_conversation_with_injections_v2?.instructions
+			return applyWhiteList(data, instructions, whitelistTweetDetails)
+		case (target === config.apiTargets.homeTimeline):
+			instructions = data?.data?.home?.home_timeline_urt?.instructions
+			whitelistTimelineShowAlert(data, instructions)
+			return applyWhiteList(data, instructions, whitelistHomeTimeline)
+		case (target === config.apiTargets.searchTimeline):
+			instructions = data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions
+			return applyWhiteList(data, instructions, whitelistHomeTimeline)
+		default:
+			return undefined
+	}
+}
+
+/**
  * whitelist export object
  * @global
  * @property {background.module:whitelist.apply} apply whitelist.apply(data, target)
@@ -191,33 +222,14 @@ function applyWhiteList(data, instructions, strategy) {
 const whitelist = {
 	/**
 	 * takes two arguments
-	 * filter twitter api data object based on target strategy callback
+	 * apply whitelisting strategy to twitterapi data object based on provided target
 	 * @memberof background.module:whitelist
 	 * @param {twitterApiObject} data twitter api object
 	 * @param {string} target configured api target
 	 * @returns {twitterApiObject} filtered twitter api object
 	 */
 	apply: function (data, target) {
-		// init instructions
-		let instructions = {}
-		// whitelist strategy based on api target
-		switch (true) {
-			case (target === config.apiTargets.userTweets):
-				instructions = data?.data?.user?.result?.timeline_v2?.timeline?.instructions
-				return applyWhiteList(data, instructions, whitelistUserTweets)
-			case (target === config.apiTargets.tweetDetail):
-				instructions = data?.data?.threaded_conversation_with_injections_v2?.instructions
-				return applyWhiteList(data, instructions, whitelistTweetDetails)
-			case (target === config.apiTargets.homeTimeline):
-				instructions = data?.data?.home?.home_timeline_urt?.instructions
-				whitelistTimelineShowAlert(data, instructions)
-				return applyWhiteList(data, instructions, whitelistHomeTimeline)
-			case (target === config.apiTargets.searchTimeline):
-				instructions = data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions
-				return applyWhiteList(data, instructions, whitelistHomeTimeline)
-			default:
-				return undefined
-		}
+		return applyWhitelistStrategy(data, target)
 	}
 }
 
