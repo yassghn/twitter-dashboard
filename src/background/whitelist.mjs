@@ -5,7 +5,7 @@
  *
  * @memberof background
  * @module whitelist
- * @property {background.module:whitelist} whitelist export object
+ * @property {whitelist} whitelist export object
  */
 
 import { config, log, logObj } from './util.mjs'
