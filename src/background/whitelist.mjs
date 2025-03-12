@@ -11,6 +11,28 @@
 import { config, log, logObj } from './util.mjs'
 
 /**
+ * @memberof background
+ * @typedef {apiObjTypes} object twitter api object types
+ */
+
+/**
+ * @type {apiObjTypes}
+ */
+const apiObjTypes = {
+	instruction: {
+		entries: 'TimelineAddEntries',
+		alert: 'TimelineShowAlert'
+	},
+	entry: {
+		timelineItem: 'TimelineTimelineItem',
+		timelineModule: 'TimelineTimelineModule'
+	},
+	item: {
+		timelineCurosr: 'TimelineTimelineCursor'
+	}
+}
+
+/**
  * takes 3 arguments
  * @callback strategyCallback
  * @param {twitterApiObject} entry twitter api object
@@ -48,7 +70,7 @@ function removeAlerts(instructions, index, indices) {
  * @type {strategyCallback}
  */
 function whitelistUserTweets(entry, indices, index) {
-	if (entry?.content?.entryType === "TimelineTimelineItem") {
+	if (entry?.content?.entryType === apiObjTypes.entry.timelineItem) {
 		log(entry)
 		// get screen_name of post
 		let screen_name = ''
@@ -77,14 +99,14 @@ function whitelistUserTweets(entry, indices, index) {
  * @type {strategyCallback}
  */
 function whitelistTweetDetails(entry, indices, index) {
-	if (entry?.content?.entryType === "TimelineTimelineItem" ||
-		entry?.content?.entryType === "TimelineTimelineModule") {
+	if (entry?.content?.entryType === apiObjTypes.entry.timelineItem ||
+		entry?.content?.entryType === apiObjTypes.entry.timelineModule) {
 		// get screen_name of timeline item entry
 		let screen_name = ''
 		if (entry.content.itemContent == undefined) {
 			screen_name = entry.content.items[0].item.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
 		} else if (entry.content.itemContent.tweet_results !== undefined &&
-			entry.content.itemContent.itemType !== 'TimelineTimelineCursor') {
+			entry.content.itemContent.itemType !== apiObjTypes.item.timelineCurosr) {
 			screen_name = entry.content.itemContent.tweet_results.result.core.user_results.result.legacy.screen_name
 		}
 		// aggregate index to delete entry
@@ -101,7 +123,7 @@ function whitelistTweetDetails(entry, indices, index) {
  * @type {strategyCallback}
  */
 function whitelistHomeTimeline(entry, indices, index) {
-	if (entry?.content?.entryType === "TimelineTimelineItem") {
+	if (entry?.content?.entryType === apiObjTypes.entry.timelineItem) {
 		// get screen_name of timeline item entry
 		let screen_name = ''
 		if (entry.content.itemContent.tweet_results.result.core == undefined) {
@@ -141,7 +163,7 @@ function whitelistAlerts(result, indices, index) {
  */
 function whitelistTimelineShowAlert(data, instructions) {
 	// get entries
-	const index = instructions.findIndex((item) => item.type === 'TimelineShowAlert')
+	const index = instructions.findIndex((item) => item.type === apiObjTypes.instruction.alert)
 	if (index != -1) {
 		const usersResults = instructions[index].usersResults
 		// interate instruction usersresults
@@ -168,7 +190,7 @@ function whitelistTimelineShowAlert(data, instructions) {
  */
 function applyWhiteList(data, instructions, strategy) {
 	// get entries
-	const index = instructions.findIndex((item) => item.type === 'TimelineAddEntries')
+	const index = instructions.findIndex((item) => item.type === apiObjTypes.instruction.entries)
 	const entries = instructions[index].entries
 	// interate instruction entries
 	let indices = []
