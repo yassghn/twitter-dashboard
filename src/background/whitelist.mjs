@@ -48,21 +48,16 @@ const apiObjTypes = {
  * @param {number} index positive integer representing element in instructions
  * @param {number[]} indices aggregated indices to filter out of instructions
  */
-function removeTimelineItems(instructions, index, indices) {
+function removeTimelineItems(instructions, index, indices, type) {
 	// filter out aggregated indices
-	instructions[index].entries = instructions[index].entries.filter((entry, index) => !indices.includes(index))
-}
-
-/**
- * takes 3 arguments
- * filters out usersResults from twitterApiObject instructions
- * @param {twitterApiObject} instructions twitter api object
- * @param {number} index positive integer representing element in instructions
- * @param {number[]} indices aggregated indices to filter out of instructions
- */
-function removeAlerts(instructions, index, indices) {
-	// filter out aggregated indices
-	instructions[index].usersResults = instructions[index].usersResults.filter((entry, index) => !indices.includes(index))
+	switch (type) {
+		case apiObjTypes.instruction.entries:
+			instructions[index].entries = instructions[index].entries.filter((entry, index) => !indices.includes(index))
+			break
+		case apiObjTypes.instruction.alert:
+			instructions[index].usersResults = instructions[index].usersResults.filter((entry, index) => !indices.includes(index))
+			break
+	}
 }
 
 /**
@@ -142,42 +137,14 @@ function whitelistHomeTimeline(entry, indices, index) {
 }
 
 /**
- * takes 3 arguments
- * @param {twitterApiObject} result twitter api object
- * @param {number[]} indices array to aggregate entry indices for filtering
- * @param {number} index positive integer representing current index of entry
+ * hometimeline api target whitelisting strategy for alerts
+ * @type {strategyCallback}
  */
 function whitelistAlerts(result, indices, index) {
 	let screen_name = result.result.legacy.screen_name
 	if (!config.options.whitelist.includes(screen_name)) {
 		indices.push(index)
 	}
-}
-
-/**
- * takes 2 arguments
- * filter twitter api object
- * @param {twitterApiObject} data twitter api object
- * @param {twitterApiObject} instructions twitter api object
- * @returns {twitterApiObject} filtered twitter api object
- */
-function whitelistTimelineShowAlert(data, instructions) {
-	// get entries
-	const index = instructions.findIndex((item) => item.type === apiObjTypes.instruction.alert)
-	if (index != -1) {
-		const usersResults = instructions[index].usersResults
-		// interate instruction usersresults
-		let indices = []
-		// collect indices of results to remove
-		usersResults.forEach((result, i) => {
-			//logObj(result)
-			whitelistAlerts(result, indices, i)
-		})
-		// filter out aggregated indices
-		removeAlerts(instructions, index, indices)
-		logObj(instructions[index].usersResults)
-	}
-	return data
 }
 
 /**
@@ -188,20 +155,38 @@ function whitelistTimelineShowAlert(data, instructions) {
  * @param {strategyCallback} strategy api target strategy callback function
  * @returns {twitterApiObject} filtered twitter api object
  */
-function applyWhiteList(data, instructions, strategy) {
-	// get entries
-	const index = instructions.findIndex((item) => item.type === apiObjTypes.instruction.entries)
-	const entries = instructions[index].entries
-	// interate instruction entries
-	let indices = []
-	// collect indices of entries to remove
-	entries.forEach((entry, i) => {
-		//logObj(entry)
-		strategy(entry, indices, i)
-	})
-	// filter out aggregated indices
-	removeTimelineItems(instructions, index, indices)
-	logObj(instructions[index].entries)
+function applyWhiteList(data, instructions, strategy, type) {
+	let index = -1
+	let apiObjArray = []
+	// get appropriate index and api object array
+	switch (type) {
+		case apiObjTypes.instruction.entries:
+			index = instructions.findIndex((item) => item.type === apiObjTypes.instruction.entries)
+			apiObjArray = instructions[index].entries
+			break
+		case apiObjTypes.instruction.alert:
+			index = instructions.findIndex((item) => item.type === apiObjTypes.instruction.alert)
+			if (index > -1) {
+				apiObjArray = instructions[index].usersResults
+			}
+			break
+	}
+	// check index
+	if (index > -1) {
+		// aggregate instruction api object array indices
+		let indices = []
+		// interate instruction api object array, collect indices of entries to remove
+		apiObjArray.forEach((obj, i) => {
+			//logObj(obj)
+			strategy(obj, indices, i)
+		})
+		// filter out aggregated indices
+		if (indices.length > 0) {
+			removeTimelineItems(instructions, index, indices, type)
+			logObj(instructions)
+		}
+	}
+	// return data
 	return data
 }
 
@@ -220,17 +205,17 @@ function applyWhitelistStrategy(data, target) {
 	switch (true) {
 		case (target === config.apiTargets.userTweets):
 			instructions = data?.data?.user?.result?.timeline_v2?.timeline?.instructions
-			return applyWhiteList(data, instructions, whitelistUserTweets)
+			return applyWhiteList(data, instructions, whitelistUserTweets, apiObjTypes.instruction.entries)
 		case (target === config.apiTargets.tweetDetail):
 			instructions = data?.data?.threaded_conversation_with_injections_v2?.instructions
-			return applyWhiteList(data, instructions, whitelistTweetDetails)
+			return applyWhiteList(data, instructions, whitelistTweetDetails, apiObjTypes.instruction.entries)
 		case (target === config.apiTargets.homeTimeline):
 			instructions = data?.data?.home?.home_timeline_urt?.instructions
-			whitelistTimelineShowAlert(data, instructions)
-			return applyWhiteList(data, instructions, whitelistHomeTimeline)
+			data = applyWhiteList(data, instructions, whitelistAlerts, apiObjTypes.instruction.alert)
+			return applyWhiteList(data, instructions, whitelistHomeTimeline, apiObjTypes.instruction.entries)
 		case (target === config.apiTargets.searchTimeline):
 			instructions = data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions
-			return applyWhiteList(data, instructions, whitelistHomeTimeline)
+			return applyWhiteList(data, instructions, whitelistHomeTimeline, apiObjTypes.instruction.entries)
 		default:
 			return undefined
 	}
