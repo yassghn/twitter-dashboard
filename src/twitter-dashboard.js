@@ -145,6 +145,6 @@ import sanitizeHtml from 'sanitize-html'
         loadDashboard()
     }
 
-    window.onload = twitter-dashboard()
+    window.onload = twitterDashboard()
 
 })();
