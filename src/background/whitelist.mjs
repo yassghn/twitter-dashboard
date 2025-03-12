@@ -3,15 +3,25 @@
  *
  * whitelist.mjs
  *
+ * @memberof background
  * @module whitelist
- * @memberof module:background
+ * @property {background.module:whitelist} whitelist export object
  */
-import {config, log, logObj} from './util.mjs'
+
+import { config, log, logObj } from './util.mjs'
+
+/**
+ * takes 3 arguments
+ * @callback strategyCallback
+ * @param {twitterApiObject} entry twitter api object
+ * @param {number[]} indices array to aggregate entry indices for filtering
+ * @param {number} index positive integer representing current index of entry
+ * @memberof background
+ */
 
 /**
  * takes 3 arguments
  * filters out entries from twitterApiObject instructions
- * @memberof module:whitelist
  * @param {twitterApiObject} instructions twitter api object
  * @param {number} index positive integer representing element in instructions
  * @param {number[]} indices aggregated indices to filter out of instructions
@@ -24,7 +34,6 @@ function removeTimelineItems(instructions, index, indices) {
 /**
  * takes 3 arguments
  * filters out usersResults from twitterApiObject instructions
- * @memberof module:whitelist
  * @param {twitterApiObject} instructions twitter api object
  * @param {number} index positive integer representing element in instructions
  * @param {number[]} indices aggregated indices to filter out of instructions
@@ -35,17 +44,7 @@ function removeAlerts(instructions, index, indices) {
 }
 
 /**
- * takes 3 arguments
- * @memberof module:whitelist
- * @callback strategyCallback
- * @param {twitterApiObject} entry twitter api object
- * @param {number[]} indices array to aggregate entry indices for filtering
- * @param {number} index positive integer representing current index of entry
- */
-
-/**
  * user tweets api target whitelisting strategy
- * @memberof module:whitelist
  * @type {strategyCallback}
  */
 function whitelistUserTweets(entry, indices, index) {
@@ -75,7 +74,6 @@ function whitelistUserTweets(entry, indices, index) {
 
 /**
  * tweet details api target whitelisting strategy
- * @memberof module:whitelist
  * @type {strategyCallback}
  */
 function whitelistTweetDetails(entry, indices, index) {
@@ -100,7 +98,6 @@ function whitelistTweetDetails(entry, indices, index) {
 
 /**
  * hometimeline api target whitelisting strategy
- * @memberof module:whitelist
  * @type {strategyCallback}
  */
 function whitelistHomeTimeline(entry, indices, index) {
@@ -124,7 +121,6 @@ function whitelistHomeTimeline(entry, indices, index) {
 
 /**
  * takes 3 arguments
- * @memberof module:whitelist
  * @param {twitterApiObject} result twitter api object
  * @param {number[]} indices array to aggregate entry indices for filtering
  * @param {number} index positive integer representing current index of entry
@@ -139,7 +135,6 @@ function whitelistAlerts(result, indices, index) {
 /**
  * takes 2 arguments
  * filter twitter api object
- * @memberof module:whitelist
  * @param {twitterApiObject} data twitter api object
  * @param {twitterApiObject} instructions twitter api object
  * @returns {twitterApiObject} filtered twitter api object
@@ -166,7 +161,6 @@ function whitelistTimelineShowAlert(data, instructions) {
 /**
  * takes 3 arguments
  * filter twitter api object based on api target strategy
- * @memberof module:whitelist
  * @param {twitterApiObject} data twitter api object
  * @param {twitterApiObject} instructions twitter api object
  * @param {strategyCallback} strategy api target strategy callback function
@@ -191,12 +185,14 @@ function applyWhiteList(data, instructions, strategy) {
 
 /**
  * whitelist export object
+ * @global
+ * @property {background.module:whitelist.apply} apply whitelist.apply(data, target)
  */
 const whitelist = {
 	/**
 	 * takes two arguments
 	 * filter twitter api data object based on target strategy callback
-	 * @memberof module:whitelist
+	 * @memberof background.module:whitelist
 	 * @param {twitterApiObject} data twitter api object
 	 * @param {string} target configured api target
 	 * @returns {twitterApiObject} filtered twitter api object

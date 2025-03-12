@@ -3,27 +3,39 @@
 *
 * background.js
 *
-* @module background
+* @namespace background
+* @property {background.module:background} background webext background work
+* @property {background.module:util} util config/logging
+* @property {background.module:whitelist} whitelist whitelisting
 */
-import {config, log, logObj} from './background/util.mjs'
+
+import { config, log, logObj } from './background/util.mjs'
 import whitelist from './background/whitelist.mjs'
 
 (async () => {
+    /**
+     * background.js
+     *
+     * @memberof background
+     * @module background
+     */
+
     'use strict'
 
     /**
-     * @memberof module:background
+     * @memberof background
      * @typedef {twitterApiObject} object twitter api response object
      */
+
     /**
-     * @memberof module:background
+     * @memberof background
      * @typedef {webApiObject} object webapi object
     */
 
     /**
      * takes url as string
      * returns configured api target
-     * @memberof module:background
+     * @memberof background.module:background
      * @param {string} url
      * @returns {string} string or undefined
      */
@@ -59,7 +71,7 @@ import whitelist from './background/whitelist.mjs'
     /**
      * takes 2 arguments
      * aggregate request data chunks and filter twitter api data object
-     * @memberof module:background
+     * @memberof background.module:background
      * @param {number} requestId positive integer representing request id
      * @param {string} target configured api target
      */
@@ -109,7 +121,7 @@ import whitelist from './background/whitelist.mjs'
     /**
      * takes 1 argument
      * initiate filtering responses for configured api targets
-     * @memberof module:background
+     * @memberof background.module:background
      * @param {webApiObject} requestDetails webapi object
      */
     function requestListener(requestDetails) {
@@ -128,7 +140,6 @@ import whitelist from './background/whitelist.mjs'
 
     /**
      * add blocking request listener for all urls and attach request body
-     * @memberof module:background
      */
     function addRequestListener() {
         browser.webRequest.onBeforeRequest.addListener(requestListener, { urls: ['<all_urls>'] }, ['blocking', 'requestBody'])
@@ -136,7 +147,7 @@ import whitelist from './background/whitelist.mjs'
 
     /**
      * get options from local storage
-     * @memberof module:background
+     * @memberof background.module:background
      */
     async function loadOptions() {
         // get options from storage
@@ -153,7 +164,7 @@ import whitelist from './background/whitelist.mjs'
 
     /**
      * listen for local storage changes
-     * @memberof module:background
+     * @memberof background.module:background
      */
     function addOptionsListener() {
         browser.storage.local.onChanged.addListener(loadOptions)
@@ -162,7 +173,7 @@ import whitelist from './background/whitelist.mjs'
     /**
      * main
      * begin twitter-dashboard background processing
-     * @memberof module:background
+     * @memberof background.module:background
      */
     function startBackground() {
         loadOptions()

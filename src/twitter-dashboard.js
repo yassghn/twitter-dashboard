@@ -3,25 +3,38 @@
  *
  * twitter-dashboard.js
  *
- * @module twitter-dashboard
+ * @namespace twitter-dashboard
+ * @property {twitter-dashboard.module:twitter-dashboard} twitter-dashboard webext main content module
  */
+
 import $ from 'jquery'
 import sanitizeHtml from 'sanitize-html'
 
 (async () => {
+    /**
+     * @memberof twitter-dashboard
+     * @module twitter-dashboard
+     */
+
     'use strict'
 
     /**
-     * @memberof module:twitter-dashboard
+     * @memberof twitter-dashboard
      * @typedef {css} string css
      */
+
     /**
-     * @memberof module:twitter-dashboard
+     * @memberof twitter-dashboard
      * @typedef {html} string html
      */
 
     /**
-     * @memberof module:twitter-dashboard
+     * @memberof twitter-dashboard
+     * @typedef {configObject} config twitter-dashboard config object
+     */
+
+    /**
+     * @memberof twitter-dashboard
      * @type {configObject}
      */
     const config = {
@@ -35,7 +48,7 @@ import sanitizeHtml from 'sanitize-html'
     /**
      * takes [upto] two arguments
      * logs to stdout or stderr
-     * @memberof module:twitter-dashboard
+     * @memberof twitter-dashboard.module:twitter-dashboard
      * @param {*} msg object or string
      * @param {boolean} [err] flag indicating to log to error
      */
@@ -50,7 +63,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * return dashboard css
-     * @memberof module:twitter-dashboard
+     * @memberof twitter-dashboard.module:twitter-dashboard
      * @returns {css} css string
      */
     async function getDashboardCss() {
@@ -62,7 +75,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * return dashboard template
-     * @memberof module:twitter-dashboard
+     * @memberof twitter-dashboard.module:twitter-dashboard
      * @returns {html} html element string
      */
     async function getDashboardTemplate() {
@@ -82,7 +95,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * insert dashboard html
-     * @memberof module:twitter-dashboard
+     * @memberof twitter-dashboard.module:twitter-dashboard
      */
     async function insertHtml() {
         // get template
@@ -103,7 +116,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * insert style element with css into document body
-     * @memberof module:twitter-dashboard
+     * @memberof twitter-dashboard.module:twitter-dashboard
      */
     async function insertCss() {
         let style = document.createElement('style')
@@ -115,7 +128,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * load dashboard html/css
-     * @memberof module:twitter-dashboard
+     * @memberof twitter-dashboard.module:twitter-dashboard
      */
     function loadDashboard() {
         document.body.style.border = '5px red dashed'
@@ -126,12 +139,12 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * main
-     * @memberof module:twitter-dashboard
+     * @memberof twitter-dashboard.module:twitter-dashboard
      */
     function twitterDashboard() {
-        loadDashboard()
+        //loadDashboard()
     }
 
-    window.onload = twitterDashboard()
+    window.onload = twitter-dashboard()
 
 })();

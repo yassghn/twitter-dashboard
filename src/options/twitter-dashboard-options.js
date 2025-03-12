@@ -3,14 +3,25 @@
  *
  * twitter-dashboard-options.js
  *
- * @module twitter-dashboard-options
+ * @namespace twitter-dashboard-options
+ * @property {twitter-dashboard-options.module:twitter-dashboard-options} twitter-dashboard-options webext options module
  */
+
 import sanitizeHtml from 'sanitize-html'
 
 (async function () {
+    /**
+     * @memberof twitter-dashboard-options
+     * @module twitter-dashboard-options
+     */
 
     /**
-     * @memberof module:twitter-dashboard-options
+     * @memberof twitter-dashboard-options
+     * @typedef {configObject} config twitter-dashboard-options config object
+     */
+
+    /**
+     * @memberof twitter-dashboard-options.module:twitter-dashboard-options
      * @type {configObject}
      */
     const config = {
@@ -30,7 +41,7 @@ import sanitizeHtml from 'sanitize-html'
     /**
      * takes [upto] two arguments
      * logs to stdout or stderr
-     * @memberof module:twitter-dashboard-options
+     * @memberof twitter-dashboard-options.module:twitter-dashboard-options
      * @param {*} msg object or string
      * @param {boolean} [err] flag indicating to log to error
      */
@@ -45,7 +56,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * format whitelist string for storage
-     * @memberof module:twitter-dashboard-options
+     * @memberof twitter-dashboard-options.module:twitter-dashboard-options
      * @param {string} text whitelist textarea text
      * @returns {string} formatted whitelist string
      */
@@ -60,7 +71,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * save options to local storage
-     * @memberof module:twitter-dashboard-options
+     * @memberof twitter-dashboard-options.module:twitter-dashboard-options
      */
     async function saveOptions() {
         const enableWhitelist = document.querySelector(config.selectors.enableWhitelist).checked
@@ -75,7 +86,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * easter egg
-     * @memberof module:twitter-dashboard-options
+     * @memberof twitter-dashboard-options.module:twitter-dashboard-options
      */
     async function egg() {
         // get header
@@ -105,7 +116,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * add click listeners to options items
-     * @memberof module:twitter-dashboard-options
+     * @memberof twitter-dashboard-options.module:twitter-dashboard-options
      */
     function addClickListeners() {
         const enableWhitelist = document.querySelector(config.selectors.enableWhitelist)
@@ -127,7 +138,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * load options from local storage
-     * @memberof module:twitter-dashboard-options
+     * @memberof twitter-dashboard-options.module:twitter-dashboard-options
      */
     async function loadOptions() {
         // get options from storage
@@ -144,7 +155,7 @@ import sanitizeHtml from 'sanitize-html'
 
     /**
      * populate settings page with stored options
-     * @memberof module:twitter-dashboard-options
+     * @memberof twitter-dashboard-options.module:twitter-dashboard-options
      */
     async function populateSavedSettings() {
         // load options
@@ -165,7 +176,7 @@ import sanitizeHtml from 'sanitize-html'
     /**
      * options
      * main
-     * @memberof module:twitter-dashboard-options
+     * @memberof twitter-dashboard-options.module:twitter-dashboard-options
      */
     function options() {
         addClickListeners()
