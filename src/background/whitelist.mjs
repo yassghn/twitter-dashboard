@@ -66,7 +66,7 @@ function removeTimelineItems(instructions, index, indices, type) {
  */
 function whitelistUserTweets(entry, indices, index) {
 	if (entry?.content?.entryType === apiObjTypes.entry.timelineItem) {
-		log(entry)
+		//logObj(entry)
 		// get screen_name of post
 		let screen_name = ''
 		if (entry.content.itemContent.tweet_results.result.legacy == undefined) {
