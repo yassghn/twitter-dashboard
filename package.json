@@ -24,7 +24,8 @@
     "package": "npm run clean && npm run build && web-ext build",
     "rollup": "rollup -c rollup.config.mjs",
     "watch": "npm-watch build",
-    "test": "test"
+    "test": "test",
+    "docs": "rm -rf docs/ && jsdoc -c jsdoc.json"
   },
   "watch": {
     "build": {
@@ -48,7 +49,9 @@
     "@rollup/plugin-node-resolve": "^16.0.0",
     "adm-zip": "^0.5.16",
     "autoprefixer": "^10.4.20",
+    "clean-jsdoc-theme": "^4.3.0",
     "fs-extra": "^11.3.0",
+    "jsdoc": "^4.0.4",
     "minimist": "^1.2.8",
     "npm-watch": "^0.13.0",
     "rollup": "^4.34.8",
