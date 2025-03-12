@@ -1,0 +1,44 @@
+{
+	"source": {
+		"include": [
+			"src/",
+			"package.json",
+			"readme.md"
+		],
+		"includePattern": "\\.(js|mjs)$",
+		"excludePattern": "(node_modules/|resources/|docs|dist/|data/)"
+	},
+	"opts": {
+		"encoding": "utf8",
+		"readme": "./readme.md",
+		"destination": "docs/",
+		"recurse": true,
+		"verbose": true,
+		"template": "node_modules/clean-jsdoc-theme",
+		"theme_opts": {
+			"default_theme": "dark",
+			"homepageTitle": "twitter-dashboard v0.0.3 docs",
+			"title": "<a href=\"index.html\" class=\"sidebar-title sidebar-title-anchor\"><span>twitter-dashboard</span><img style=\"padding-left: .5em;\" src=\"resources/icons/twitter-dashboard-48.png\"/><br/><span>v0.0.3 docs</span></a>",
+			"favicon": "resources/icons/twitter-dashboard-48.png",
+			"static_dir": [
+				"resources/icons/"
+			],
+			"sections": [
+				"Modules",
+				"Namespaces",
+				"Global"
+			],
+			"create_style": "code:not([class]) { padding-left: .5em };"
+		}
+	},
+	"tags": {
+		"allowUnknownTags": true
+	},
+	"plugins": [
+		"plugins/markdown"
+	],
+	"markdown": {
+		"hardwrap": false,
+		"idInHeadings": true
+	}
+}
