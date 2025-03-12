@@ -148,6 +148,35 @@ function whitelistAlerts(result, indices, index) {
 }
 
 /**
+ * takes 2 arguments
+ * @param {twitterApiObject} instructions
+ * @param {apiObjTypes} type
+ * @returns {object} object containing target index and target api object array
+ */
+function getInstruction(instructions, type) {
+	// instruction return obj
+	const instruction = {
+		index: -1,
+		apiObjArray: []
+	}
+	// get appropriate index and api object array
+	switch (type) {
+		case apiObjTypes.instruction.entries:
+			instruction.index = instructions.findIndex((item) => item.type === type)
+			instruction.apiObjArray = instructions[instruction.index].entries
+			break
+		case apiObjTypes.instruction.alert:
+			instruction.index = instructions.findIndex((item) => item.type === type)
+			if (instruction.index > -1) {
+				instruction.apiObjArray = instructions[instruction.index].usersResults
+			}
+			break
+	}
+	// return
+	return instruction
+}
+
+/**
  * takes 3 arguments
  * filter twitter api object based on api target strategy
  * @param {twitterApiObject} data twitter api object
@@ -156,33 +185,20 @@ function whitelistAlerts(result, indices, index) {
  * @returns {twitterApiObject} filtered twitter api object
  */
 function applyWhiteList(data, instructions, strategy, type) {
-	let index = -1
-	let apiObjArray = []
-	// get appropriate index and api object array
-	switch (type) {
-		case apiObjTypes.instruction.entries:
-			index = instructions.findIndex((item) => item.type === apiObjTypes.instruction.entries)
-			apiObjArray = instructions[index].entries
-			break
-		case apiObjTypes.instruction.alert:
-			index = instructions.findIndex((item) => item.type === apiObjTypes.instruction.alert)
-			if (index > -1) {
-				apiObjArray = instructions[index].usersResults
-			}
-			break
-	}
+	// get instruction
+	const instruction = getInstruction(instructions, type)
 	// check index
-	if (index > -1 && apiObjArray.length > 0) {
+	if (instruction.index > -1 && instruction.apiObjArray.length > 0) {
 		// aggregate instruction api object array indices
 		let indices = []
 		// interate instruction api object array, collect indices of entries to remove
-		apiObjArray.forEach((obj, i) => {
+		instruction.apiObjArray.forEach((obj, i) => {
 			//logObj(obj)
 			strategy(obj, indices, i)
 		})
 		// filter out aggregated indices
 		if (indices.length > 0) {
-			removeTimelineItems(instructions, index, indices, type)
+			removeTimelineItems(instructions, instruction.index, indices, type)
 			logObj(instructions)
 		}
 	}
