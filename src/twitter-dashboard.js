@@ -142,7 +142,7 @@ import sanitizeHtml from 'sanitize-html'
      * @memberof twitter-dashboard.module:twitter-dashboard
      */
     function twitterDashboard() {
-        //loadDashboard()
+        loadDashboard()
     }
 
     window.onload = twitter-dashboard()
