@@ -172,7 +172,7 @@ function applyWhiteList(data, instructions, strategy, type) {
 			break
 	}
 	// check index
-	if (index > -1) {
+	if (index > -1 && apiObjArray.length > 0) {
 		// aggregate instruction api object array indices
 		let indices = []
 		// interate instruction api object array, collect indices of entries to remove
