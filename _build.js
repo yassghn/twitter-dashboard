@@ -22,7 +22,8 @@ const config = {
     dirs: {
         ext: 'dist/ext',
         out: { zip: 'dist/zip', dist: 'dist' },
-        in: ['resources/', 'dist/rolledup',]
+        in: ['resources/', 'dist/rolledup',],
+        exclude: ['src/background', 'src/modules']
     },
     src: {
         js: ['src/**/*.js', 'src/**/*.mjs'],
@@ -33,7 +34,7 @@ const config = {
 // copy javascript
 function copyJs() {
     try {
-        const files = globSync(config.src.js)
+        const files = globSync(config.src.js, {exclude: config.dirs.exclude})
         for (let file of files) {
             const dest = config.dirs.ext+file.replace('src', '')
             fs.cpSync(file, dest)
