@@ -76,8 +76,7 @@ import { config, log, logObj } from './modules/util.mjs'
         // insert template to shadow dom
         const range = document.createRange()
         const frag = range.createContextualFragment(dashboardTemplate)
-        const sanitized = sanitizeHtml(frag)
-        document.body.appendChild(sanitized)
+        document.body.appendChild(frag)
         // clone template
         const template = document.querySelector(config.selectors.dashboardTemplate)
         const clone = template.content.cloneNode(true)
