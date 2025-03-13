@@ -9,6 +9,7 @@
 
 import $ from 'jquery'
 import sanitizeHtml from 'sanitize-html'
+import { config, log, logObj } from './modules/util.mjs'
 
 (async () => {
     /**
@@ -32,34 +33,6 @@ import sanitizeHtml from 'sanitize-html'
      * @memberof twitter-dashboard
      * @typedef {configObject} config twitter-dashboard config object
      */
-
-    /**
-     * @memberof twitter-dashboard
-     * @type {configObject}
-     */
-    const config = {
-        debug: true,
-        projectName: 'twitter-dashboard',
-        selectors: {
-            dashboardTemplate: '#dashboard-template'
-        }
-    }
-
-    /**
-     * takes [upto] two arguments
-     * logs to stdout or stderr
-     * @memberof twitter-dashboard.module:twitter-dashboard
-     * @param {*} msg object or string
-     * @param {boolean} [err] flag indicating to log to error
-     */
-    function log(msg, err = false) {
-        if (config.debug) {
-            if (!err)
-                console.log(msg)
-            else
-                console.error(msg)
-        }
-    }
 
     /**
      * return dashboard css
