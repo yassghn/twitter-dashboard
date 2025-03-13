@@ -104,7 +104,8 @@ import { config, log, logObj } from './modules/util.mjs'
      */
     function loadDashboard() {
         document.body.style.border = '5px red dashed'
-        log(`LOOK AT THIS PIECE OF SHIT ${$('div')[0]}`)
+        log('LOOK AT THIS PIECE OF SHIT')
+        logObj($('div')[0])
         insertCss()
         insertHtml()
     }
