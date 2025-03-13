@@ -5,8 +5,8 @@
 *
 * @namespace background
 * @property {background.module:background} background webext background work
-* @property {background.module:util} util config/logging
-* @property {background.module:whitelist} whitelist whitelisting
+* @property {background.module:background/util} util config/logging
+* @property {background.module:background/whitelist} whitelist whitelisting
 */
 
 import { config, log, logObj } from './background/util.mjs'

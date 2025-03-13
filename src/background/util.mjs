@@ -4,10 +4,10 @@
  * util.mjs
  *
  * @memberof background
- * @module util
- * @property {config} config background config object
- * @property {log} log log message
- * @property {logObj} logObj log object
+ * @module background/util
+ * @property {background.module:background/util.config} config config export object
+ * @property {background.module:background/util.log} log log message export function
+ * @property {background.module:background/util.logObj} logObj log object export function
  */
 
 /**
@@ -16,7 +16,6 @@
  */
 
 /**
- * @global
  * @type {configObject}
  * */
 export const config = {
@@ -33,7 +32,6 @@ export const config = {
 /**
  * takes [upto] two arguments
  * logs to stdout or stderr
- * @global
  * @param {*} msg object or string
  * @param {boolean} [err] flag indicating to log to error
  */
@@ -50,7 +48,6 @@ export function log(msg, err = false) {
 /**
  * takes [upto] two arguments
  * use console.dir to log an object with a specified depth
- * @global
  * @param {*} obj object
  * @param {number} depth number indicating object depth to log
  */

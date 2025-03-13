@@ -4,12 +4,14 @@
  * util.mjs
  *
  * @memberof twitter-dashboard
- * @module util
+ * @module twitter-dashboard/util
+ * @property {twitter-dashboard.module:twitter-dashboard/util.config} config config export object
+ * @property {twitter-dashboard.module:twitter-dashboard/util.log} log log message export function
+ * @property {twitter-dashboard.module:twitter-dashboard/util.logObj} logObj log object export function
  *
  */
 
 /**
- * @memberof twitter-dashboard
  * @type {configObject}
  */
 export const config = {
@@ -23,7 +25,6 @@ export const config = {
 /**
  * takes [upto] two arguments
  * logs to stdout or stderr
- * @global
  * @param {*} msg object or string
  * @param {boolean} [err] flag indicating to log to error
  */
@@ -40,7 +41,6 @@ export function log(msg, err = false) {
 /**
  * takes [upto] two arguments
  * use console.dir to log an object with a specified depth
- * @global
  * @param {*} obj object
  * @param {number} depth number indicating object depth to log
  */

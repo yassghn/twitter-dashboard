@@ -4,8 +4,8 @@
  * whitelist.mjs
  *
  * @memberof background
- * @module whitelist
- * @property {whitelist} whitelist export object
+ * @module background/whitelist
+ * @property {background.module:background/whitelist~whitelist} whitelist whitelist export object
  */
 
 import { config, log, logObj } from './util.mjs'
@@ -239,14 +239,13 @@ function applyWhitelistStrategy(data, target) {
 
 /**
  * whitelist export object
- * @global
- * @property {background.module:whitelist.apply} apply whitelist.apply(data, target)
+ * @property {background.module:background/whitelist.apply} apply whitelist export function
  */
 const whitelist = {
 	/**
 	 * takes two arguments
 	 * apply whitelisting strategy to twitterapi data object based on provided target
-	 * @memberof background.module:whitelist
+	 * @memberof background.module:background/whitelist
 	 * @param {twitterApiObject} data twitter api object
 	 * @param {string} target configured api target
 	 * @returns {twitterApiObject} filtered twitter api object
