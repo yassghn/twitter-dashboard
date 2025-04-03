@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "twitter-dashboard",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "quality of life dashboard for twitter-2",
     "homepage_url": "https://github.com/yassghn/twitter-dashboard",
     "icons": {
