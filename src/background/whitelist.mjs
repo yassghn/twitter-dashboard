@@ -221,6 +221,9 @@ function applyWhitelistStrategy(data, target) {
 	switch (true) {
 		case (target === config.apiTargets.userTweets):
 			instructions = data?.data?.user?.result?.timeline_v2?.timeline?.instructions
+			if (instructions == undefined) {
+				instructions = data?.data?.user?.result?.timeline?.timeline?.instructions
+			}
 			return applyWhiteList(data, instructions, whitelistUserTweets, apiObjTypes.instruction.entries)
 		case (target === config.apiTargets.tweetDetail):
 			instructions = data?.data?.threaded_conversation_with_injections_v2?.instructions
