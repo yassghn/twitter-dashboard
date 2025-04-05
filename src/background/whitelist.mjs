@@ -47,6 +47,7 @@ const apiObjTypes = {
  * @param {twitterApiObject} instructions twitter api object
  * @param {number} index positive integer representing element in instructions
  * @param {number[]} indices aggregated indices to filter out of instructions
+ * @param {apiObjTypes} type api object instructions type
  */
 function removeTimelineItems(instructions, index, indices, type) {
 	// filter out aggregated indices
