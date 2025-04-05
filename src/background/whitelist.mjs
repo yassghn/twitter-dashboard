@@ -183,6 +183,7 @@ function getInstruction(instructions, type) {
  * @param {twitterApiObject} data twitter api object
  * @param {twitterApiObject} instructions twitter api object
  * @param {strategyCallback} strategy api target strategy callback function
+ * @param {apiObjTypes} type api object instructions type
  * @returns {twitterApiObject} filtered twitter api object
  */
 function applyWhiteList(data, instructions, strategy, type) {
